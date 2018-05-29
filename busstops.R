@@ -258,7 +258,7 @@ metro_stops <- rbind(routes_31, routes_32, routes_43, routes_44, routes_45, rout
                       
 metro_stops$agency <- "Metro Transit"
 
-sound_routes <- GET(paste0("http://api.pugetsound.onebusaway.org/api/where/routes-for-agency/40.json?", key, "")
+sound_routes <- GET(paste0("http://api.pugetsound.onebusaway.org/api/where/routes-for-agency/40.json?", key))
 sound_routes <- content(sound_routes, "text")
 sound_routes <- fromJSON(sound_routes)
 sound_routes <- data.frame(sound_routes$data$list, stringsAsFactors = FALSE)
@@ -320,7 +320,7 @@ routes_link <- routes_link %>%
 sound_stops <- rbind(routes_540, routes_541, routes_542, routes_556, routes_586, routes_link)
 sound_stops$agency <- "Sound Transit"
 
-community_routes <- GET(paste0("http://api.pugetsound.onebusaway.org/api/where/routes-for-agency/29.json?", key, "")
+community_routes <- GET(paste0("http://api.pugetsound.onebusaway.org/api/where/routes-for-agency/29.json?", key))
 community_routes <- content(community_routes, "text")
 community_routes <- fromJSON(community_routes)
 community_routes <- data.frame(community_routes$data$list, stringsAsFactors = FALSE)
