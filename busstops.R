@@ -393,5 +393,5 @@ rm(routes_31, routes_32, routes_43, routes_44, routes_45, routes_48,
 all_stops <- rbind(metro_stops,sound_stops,community_stops)
 all_stops$route_id <- paste("Route", all_stops$route_id)
 all_stops$route_id[all_stops$route_id == "Route Link light rail"] <- "Link light rail"
-#write.csv(all_stops, file = "./data/bus_stops_data.csv")
+write.csv(all_stops, file = "./data/bus_stops_data.csv")
 
