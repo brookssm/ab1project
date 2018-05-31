@@ -59,7 +59,7 @@ ui <- fluidPage(
                    blue spots represent the bus stops. When clicking on the crimes,
                    the offense and the date reported appears. When clicking on
                    bus stops, the agency and route ID appears. The map can be be
-                   filtered by the type of offense commited.")
+                   filtered by the type of offense commited."))
              )
     )
   )
