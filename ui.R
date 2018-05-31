@@ -24,7 +24,7 @@ ui <- fluidPage(
       )
     ),
 
-    tabPanel("Bus Stop Visualization", fluid = TRUE,
+    tabPanel("Bus Stop Visualizer", fluid = TRUE,
              sidebarLayout(
                sidebarPanel(h3("Bus Stop Visualizer"),
                             p("Here you can view all the bus stops that will get you on
@@ -60,11 +60,7 @@ ui <- fluidPage(
     tabPanel("Crime Data",
              sidebarLayout(
                sidebarPanel(
-                 unique(selectInput("Crime", "Select a Crime",
-                                    choices = crime_data$`Offense Type`))
-               ),
-               mainPanel(
-                 leafletOutput("crime_map"),
+                 h3("Crime Data"),
                  p("This map displays the relationship between crime rates in
                    Seattle and the bus stops that lead to University District.
                    These offenses were reported within the last three months
@@ -72,8 +68,15 @@ ui <- fluidPage(
                    blue spots represent the bus stops. When clicking on the crimes,
                    the offense and the date reported appears. When clicking on
                    bus stops, the agency and route ID appears. The map can be be
-                   filtered by the type of offense commited."))
+                   filtered by the type of offense commited."),
+                 selectInput("Crime", "Select a Crime",
+                             choices = crime_data$`Offense Type`)
+               ),
+               mainPanel(
+                 leafletOutput("crime_map")
+               )
              )
     )
   )
 )
+
