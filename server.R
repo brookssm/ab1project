@@ -56,6 +56,12 @@ server <- function(input, output) {
     summary(filtered_stops())
   })
   
+  crime_reactive <- reactive({
+    rever <- crime_data %>%
+      filter(`Offense Type` == input$Crime)
+    return(rever)
+  })
+  
   output$crime_map <- renderLeaflet({
     
     crime_map <- leaflet(crime_data) %>% setView(lng = -122.3312, lat = 47.62199, zoom = 10) %>%
@@ -71,10 +77,6 @@ server <- function(input, output) {
         color = "Blue"
       )
     
-    crime_reactive <- reactive({
-      filter <- crime_data %>%
-        filter(`Offense Type` == input$Crime)
-    })
     
   })
   

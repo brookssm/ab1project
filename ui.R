@@ -129,8 +129,8 @@ ui <- fluidPage(
                    the offense and the date reported appears. When clicking on
                    bus stops, the agency and route ID appears. The map can be be
                    filtered by the type of offense commited."),
-                 selectInput("Crime", "Select a Crime",
-                             choices = crime_data$`Offense Type`)
+                 selectInput('Crime', "Select a Crime",
+                             list(unique(crime_data$`Offense Type`)))
                  
                ),
                mainPanel(
@@ -147,7 +147,9 @@ ui <- fluidPage(
                   
                   p("This research uses data from The Bureau of Labor Statistics and the Ride the Wave Transit Guide from Sound Transit."),
                   
-                  plotOutput("eplot")
+                  plotOutput("eplot"),
+                  
+                  p("The green line represents changes in bus schedules and the red line represents added trips.")
                   
                 ))
   )
