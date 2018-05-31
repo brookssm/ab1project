@@ -1,13 +1,22 @@
+library(shiny)
+library(dplyr)
+library(leaflet)
+library(geojsonio)
+
 server <- function(input, output) {
   topoData <- geojsonio::geojson_read("./data/geojson/neighborhoods.geojson",
                                       what = "sp")
   agencycolor <- colorFactor(c("#00ffb3", "#ff4c00", "#1300ff"), all_stops$agency)
+  all_stops[1] <- NULL
   
   filtered_stops <- reactive({
     stops <- all_stops %>% 
-      filter(agency == input$agency)
+      filter(agency == input$agency) %>% 
+      filter(lon >= input$lon_choice[1] & 
+               lon <= input$lon_choice[2]) %>% 
+      filter(lat >= input$lat_choice[1] & 
+               lat <= input$lat_choice[2])
   })
-
   
   output$stops <- renderLeaflet({
   leaflet(topoData) %>%
@@ -28,4 +37,28 @@ server <- function(input, output) {
                 opacity = 0.8, data = all_stops)
   })
   
+  output$stops_table <- renderDataTable({
+    return(filtered_stops())
+  }, options = list(columns = list(
+         list(title = 'Latitude'),
+         list(title = 'Longitude'),
+         list(title = 'Route ID'),
+         list(title = 'Agency')))
+  )
+  
+  output$crime_map <- renderLeaflet({
+    
+    crime_map <- leaflet(crime_data) %>% setView(lng = -122.3312, lat = 47.62199, zoom = 10) %>%
+      addTiles() %>%
+      addCircles(~Longitude, ~Latitude,
+                 popup = paste0("Date Reported: ",
+                                crime_data$`Date Reported`),
+                 color = ~color(crime_data$Month)
+      ) %>%
+      addCircles(
+        data = bus_stops, ~lon, ~lat,
+        popup = paste0(bus_stops$route_id),
+        color = "Blue"
+      )
+  })
 }
