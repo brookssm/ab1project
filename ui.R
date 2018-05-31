@@ -4,16 +4,29 @@ library(leaflet)
 library(geojsonio)
 
 source("busstopmap.R")
+source("crimedata.R")
 range_lat <- range(all_stops$lat)
 range_lon <- range(all_stops$lon)
+crime_data <- read.csv("./data/police_report_data.csv")
 
 ui <- fluidPage(
   tabsetPanel(
     tabPanel("Bus Stop Map", fluid = TRUE,
              sidebarLayout(
-               sidebarPanel(checkboxGroupInput("agency", "Select Transit Agency:", 
+               sidebarPanel(h3("Bus Stop Viewer"),
+                            p("Here you can view all the bus stops that will get you on
+                              a bus to University District without a transfer. The stops can 
+                              be filtered by the latitude, longitude, and transit agency. The 
+                              spots on the map represent different bus stops and the colors indicate
+                              the transit agency the route belongs to. The stops can be clicked to 
+                              show the route and transit agency associated with them. Additionally, the map
+                              can be clicked to show you what neighborhood you are in. "),
+                            hr(),
+                 checkboxGroupInput("agency", "Select Transit Agency:", 
                                         choices = all_stops$agency %>% unique(), 
-                                        selected = "Metro Transit"),
+                                        selected = c("Metro Transit",
+                                                     "Sound Transit",
+                                                     "Community Transit")),
                             sliderInput('lat_choice', label = "Adjust Latitude:", 
                                         min=range_lat[1], max = range_lat[2], 
                                         value = range_lat, step = 0.001),
@@ -28,13 +41,14 @@ ui <- fluidPage(
              )
     ),
     
-    tabPanel("plot", fluid = TRUE,
+    tabPanel("Crime Data",
              sidebarLayout(
-               sidebarPanel(sliderInput("year", "Year:", min = 1968, 
-                                        max = 2009, value = 2009, sep='')),
-               mainPanel(fluidRow(   
-               )
-               )
+               sidebarPanel(
+                 unique(selectInput("Crime", "Select a Crime",
+                                    choices = crime_data$`Offense Type`))
+               ),
+               mainPanel(
+                 leafletOutput("crime_map"))
              )
     )
   )

@@ -45,4 +45,20 @@ server <- function(input, output) {
          list(title = 'Route ID'),
          list(title = 'Agency')))
   )
+  
+  output$crime_map <- renderLeaflet({
+    
+    crime_map <- leaflet(crime_data) %>% setView(lng = -122.3312, lat = 47.62199, zoom = 10) %>%
+      addTiles() %>%
+      addCircles(~Longitude, ~Latitude,
+                 popup = paste0("Date Reported: ",
+                                crime_data$`Date Reported`),
+                 color = ~color(crime_data$Month)
+      ) %>%
+      addCircles(
+        data = bus_stops, ~lon, ~lat,
+        popup = paste0(bus_stops$route_id),
+        color = "Blue"
+      )
+  })
 }
