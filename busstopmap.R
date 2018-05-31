@@ -2,16 +2,10 @@ library(dplyr)
 library(geojsonio)
 library(leaflet)
 
-sound_stops <- all_stops %>% 
-  filter(agency == "Sound Transit")
-community_stops <- all_stops %>% 
-  filter(agency == "Community Transit")
-metro_stops <- all_stops %>% 
-  filter(agency == "Metro Transit")
 all_stops <- read.csv("./data/bus_stops_data.csv")
-choices <- c(all_stops, community_stops, metro_stops, sound_stops)
 topoData <- geojsonio::geojson_read("./data/geojson/neighborhoods.geojson",
                                     what = "sp")
+
 agencycolor <- colorFactor(c("#00ffb3", "#ff4c00", "#1300ff"), all_stops$agency)
 leaflet(topoData) %>%
   setView(-122.3035, 47.6553, zoom = 13) %>%
