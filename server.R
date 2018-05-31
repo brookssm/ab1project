@@ -47,6 +47,10 @@ server <- function(input, output) {
          list(title = 'Agency')))
   )
   
+  output$count <- renderPrint({
+    summary(filtered_stops())
+  })
+  
   output$crime_map <- renderLeaflet({
     
     crime_map <- leaflet(crime_data) %>% setView(lng = -122.3312, lat = 47.62199, zoom = 10) %>%

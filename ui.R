@@ -88,6 +88,7 @@ ui <- fluidPage(
                mainPanel(
                  h3("Map"),
                  leafletOutput("stops"),
+                 verbatimTextOutput("count"),
                  h4("Map Summary"),
                  p("Above you will notice a few things. Of all the agencies serving
                    Seattle, Metro Transit is certainly the most extensive in terms of 
