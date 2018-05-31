@@ -10,10 +10,25 @@ tract@data$GEOID <- as.character(tract@data$GEOID)
 
 acs_data <- read.csv("./data/census/ACS_16_5YR_B02001_with_ann.csv",
                      stringsAsFactors = F) %>% 
-  mutate(GEO.id2 = as.character(GEO.id2))
+  mutate(GEO.id2 = as.character(GEO.id2)) %>% 
+  select(starts_with("HD01"), -HD01_VD09, -HD01_VD10,
+         GEO.id2, `GEO.display.label`) %>% 
+  mutate_if(is.integer, as.double) %>% 
+  mutate(HD01_VD02 = HD01_VD02 / HD01_VD01,
+         HD01_VD03 = HD01_VD03 / HD01_VD01,
+         HD01_VD04 = HD01_VD04 / HD01_VD01,
+         HD01_VD05 = HD01_VD05 / HD01_VD01,
+         HD01_VD06 = HD01_VD06 / HD01_VD01,
+         HD01_VD07 = HD01_VD07 / HD01_VD01,
+         HD01_VD08 = HD01_VD08 / HD01_VD01) %>% 
+  setNames(c("Population", "% White", "% Black",
+             "% American Indian & Alaskan Native",
+             "% Asian", 
+             "% Native Hawaiian & Pacific Islander",
+             "% Other", "% Two or more races",
+             "GEOID", "Census Tract"))
 full <- tract
-full@data <- left_join(tract@data, acs_data, 
-                       by = c("GEOID" = "GEO.id2"))
+full@data <- left_join(tract@data, acs_data)
 
 # https://gis.stackexchange.com/questions/89512/r-dealing-with-missing-data-in-spatialpolygondataframes-for-moran-test
 # FUNCTION TO REMOVE NA's IN sp DataFrame OBJECT
@@ -24,11 +39,11 @@ sp.na.omit <- function(x, margin=1) {
     stop("MUST BE sp SpatialPointsDataFrame OR SpatialPolygonsDataFrame CLASS OBJECT") 
   na.index <- unique(as.data.frame(which(is.na(x@data),arr.ind=TRUE))[,margin])
   if(margin == 1) {  
-    cat("DELETING ROWS: ", na.index, "\n") 
+    # cat("DELETING ROWS: ", na.index, "\n") 
     return( x[-na.index,]  ) 
   }
   if(margin == 2) {  
-    cat("DELETING COLUMNS: ", na.index, "\n") 
+    # cat("DELETING COLUMNS: ", na.index, "\n") 
     return( x[,-na.index]  ) 
   }
 }
