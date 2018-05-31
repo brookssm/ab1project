@@ -46,7 +46,7 @@ ecdata <- read.csv("./data/ednalysis.csv")
 #define User interface
 
 #max and min of months
-months <- range(ecdata$months_after)
+months <- as.numeric(range(ecdata$months_after))
 
 
 ui <- fluidPage(
@@ -96,3 +96,59 @@ server <- function(input, output) {
 }
 
 
+p <- ggplot(ecdata, aes(x = months_after, y = unemployment.rate))+ geom_bar(stat = "identity")+
+  geom_smooth(mapping = aes(x = months_after, y = ch_adj, color = "green"), method = "loess")+
+  geom_smooth(mapping = aes(x = months_after, y = new_r, color = "red"), method = "loess")+
+  ggtitle("Unmployment rate and bus changes/new routes")+
+  guides(colour = FALSE)+
+  labs(x= "Months after September 2015")+
+  labs(y= "Percentage and number")
+  
+f <- ggplot(filtered())+
+  geom_smooth(mapping = aes(x = months_after, y = ch_adj, color = "green"), method = "loess")+
+  geom_smooth(mapping = aes(x = months_after, y = new_r, color = "red"), method = "loess")+
+  ggtitle("Unmployment rate and bus changes/new routes")+
+  guides(colour = FALSE)+
+  labs(x= "Months after September 2015")+
+  labs(y= "Percentage and number")
+
+output$plot <- renderPlot({ 
+  p <- ggplot(filtered(), aes(x = months_after, y = unemployment.rate))+ 
+    geom_bar(stat = "identity")+ 
+    geom_smooth(mapping = aes(x = months_after, y = ch_adj, color = "green"), method = "loess")+
+    geom_smooth(mapping = aes(x = months_after, y = new_r, color = "red"), method = "loess")+
+    ggtitle("Unmployment rate and bus changes/new routes")+
+    guides(colour = FALSE)+
+    labs(x= "Months after September 2015")+
+    labs(y= "Percentage and number")
+  
+  return(p)
+  
+  ,
+  
+  tabPanel("Route Additions, Schedule Changes and Employment",
+           sidebarLayout(
+             sidebarPanel(
+               sliderInput('mo_after', label="Months After September 2015", min=months[1], max=months[2], value=months)
+             ),
+             mainPanel(
+               
+               p("This research uses data from The Bureau of Labor Statistics and the Ride the Wave Transit Guide from Sound Transit."),
+               
+               plotOutput(plot)
+               
+             ))
+           
+           ,
+           
+           tabPanel("Crime Data",
+                    sidebarLayout(
+                      sidebarPanel(
+                        unique(selectInput("Crime", "Select a Crime",
+                                           choices = crime_data$`Offense Type`))
+                      ),
+                      mainPanel(
+                        leafletOutput("crime_map"))
+                    )
+           )
+  )

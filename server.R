@@ -2,6 +2,13 @@ library(shiny)
 library(dplyr)
 library(leaflet)
 library(geojsonio)
+library(ggplot2)
+ecdata <- read.csv("./data/ednalysis.csv")
+ecdata <- mutate(ecdata, months_after = as.numeric(months_after))%>%
+  mutate(unemployment.rate = as.numeric(unemployment.rate)) %>%
+  mutate(ch_adj = as.numeric(ch_adj))%>%
+  mutate(new_r = as.numeric(new_r))
+
 
 server <- function(input, output) {
   topoData <- geojsonio::geojson_read("./data/geojson/neighborhoods.geojson",
@@ -61,4 +68,22 @@ server <- function(input, output) {
         color = "Blue"
       )
   })
+  
+
+  
+  filtered <- reactive({
+    data <- ecdata %>%
+      filter(months_after > input$mo_after[1] & months_after < input$mo_after[2]) %>%
+      return(data)
+  })
+  
+  output$plot <- renderPlot({ 
+    ggplot(filtered(), aes(x = months_after, y = unemployment.rate))+ 
+      geom_bar(stat = "identity")
+    
+  })
+  
+
+  
+  
 }

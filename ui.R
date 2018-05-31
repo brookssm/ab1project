@@ -2,12 +2,17 @@ library(shiny)
 library(dplyr)
 library(leaflet)
 library(geojsonio)
+library(ggplot2)
 
 source("busstopmap.R")
 source("crimedata.R")
 range_lat <- range(all_stops$lat)
 range_lon <- range(all_stops$lon)
 crime_data <- read.csv("./data/police_report_data.csv")
+
+ecda <- read.csv("./data/ednalysis.csv")
+months <- as.numeric(range(ecda$months_after))
+
 
 ui <- fluidPage(
   tabsetPanel(
