@@ -9,7 +9,6 @@ ecdata <- mutate(ecdata, months_after = as.numeric(months_after))%>%
   mutate(ch_adj = as.numeric(ch_adj))%>%
   mutate(new_r = as.numeric(new_r))
 
-
 server <- function(input, output) {
   topoData <- geojsonio::geojson_read("./data/geojson/neighborhoods.geojson",
                                       what = "sp")
@@ -53,11 +52,15 @@ server <- function(input, output) {
          list(title = 'Agency')))
   )
   
+  output$count <- renderPrint({
+    summary(filtered_stops())
+  })
+  
   output$crime_map <- renderLeaflet({
     
     crime_map <- leaflet(crime_data) %>% setView(lng = -122.3312, lat = 47.62199, zoom = 10) %>%
       addTiles() %>%
-      addCircles(~Longitude, ~Latitude,
+      addCircles(data = crime_reactive(), ~Longitude, ~Latitude,
                  popup = paste0("Date Reported: ",
                                 crime_data$`Date Reported`),
                  color = ~color(crime_data$Month)
@@ -67,6 +70,12 @@ server <- function(input, output) {
         popup = paste0(bus_stops$route_id),
         color = "Blue"
       )
+    
+    crime_reactive <- reactive({
+      filter <- crime_data %>%
+        filter(`Offense Type` == input$Crime)
+    })
+    
   })
   
 

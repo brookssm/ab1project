@@ -1,6 +1,6 @@
 library("dplyr")
 library("shiny")
-library("ggplo2")
+library("ggplot2")
 
 #Make dataframe for changes in bus routes since September 2015, new trips, etc. Schedule changes and new trips
 #We can have schedule changes and new trips
