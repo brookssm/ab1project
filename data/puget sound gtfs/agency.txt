@@ -1,0 +1,13 @@
+agency_id,agency_name,agency_url,agency_timezone,agency_lang,agency_phone,agency_fare_url,agency_email
+1,Metro Transit,http://metro.kingcounty.gov,America/Los_Angeles,EN,206-553-3000,http://metro.kingcounty.gov/tops/bus/fare/fare-info.html#fare_matrix,
+19,Intercity Transit,http://www.Intercitytransit.com,America/Los_Angeles,en,(360) 786-1881,,
+23,City of Seattle,http://www.seattle.gov,America/Los_Angeles,EN,206-684-7623,http://www.seattlestreetcar.org/,
+29,Community Transit,http://www.communitytransit.org/,America/Los_Angeles,en,(800) 562-1375,http://www.commtrans.org/fares/faresandpasses,riders@commtrans.org
+3,Pierce Transit,http://www.piercetransit.org,America/Los_Angeles,EN,(253)581-8000,,
+40,Sound Transit,http://www.soundtransit.org,America/Los_Angeles,EN,(800) 201-4900,,
+95,Washington State Ferries,http://www.wsdot.wa.gov/ferries/,America/Los_Angeles,en,,,
+96,Seattle Center Monorail,http://www.seattlemonorail.com,America/Los_Angeles,EN,,,
+97,Everett Transit,http://www.everetttransit.org/,America/Los_Angeles,en,,http://www.everetttransit.org/,
+98,Seattle Children's Hospital,http://www.csched.com,America/Los_Angeles,en,,,
+99,GO Transit,http://GOLewisMcChord.com,America/Los_Angeles,EN,+12539663939,,
+KMD,Kingcounty Marine Divison,http://www.kingcounty.gov/transportation/kcdot/Marine.aspx,America/Los_Angeles,EN,206-684-1515,http://www.kingcounty.gov/transportation/kcdot/Marine.aspx/,

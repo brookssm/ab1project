@@ -8,13 +8,18 @@ library(ggplot2)
 tract <- readOGR(dsn = "./data/census/geog")
 tract@data$GEOID <- as.character(tract@data$GEOID)
 
+# American Community Survey demographic data for King County
+# margin of error can be *very* high, averaged over 5 years
+# for a *general idea* of how neighborhoods have looked
 acs_data <- read.csv("./data/census/ACS_16_5YR_B02001_with_ann.csv",
                      stringsAsFactors = F) %>% 
   mutate(GEO.id2 = as.character(GEO.id2)) %>% 
   select(starts_with("HD01"), -HD01_VD09, -HD01_VD10,
          GEO.id2, `GEO.display.label`) %>% 
   mutate_if(is.integer, as.double) %>% 
-  mutate(HD01_VD02 = HD01_VD02 / HD01_VD01,
+  mutate(# Population counts to population percents
+         # mutate_if not working
+         HD01_VD02 = HD01_VD02 / HD01_VD01,
          HD01_VD03 = HD01_VD03 / HD01_VD01,
          HD01_VD04 = HD01_VD04 / HD01_VD01,
          HD01_VD05 = HD01_VD05 / HD01_VD01,
@@ -26,7 +31,8 @@ acs_data <- read.csv("./data/census/ACS_16_5YR_B02001_with_ann.csv",
              "% Asian", 
              "% Native Hawaiian & Pacific Islander",
              "% Other", "% Two or more races",
-             "GEOID", "Census Tract"))
+             "GEOID", "Census Tract")) %>% 
+  mutate(`Census Tract` = gsub("[^0-9.]", "", `Census Tract`))
 full <- tract
 full@data <- left_join(tract@data, acs_data)
 
@@ -52,7 +58,19 @@ sp.na.omit <- function(x, margin=1) {
 # in SpatialPolygonDataFrame
 full <- sp.na.omit(full)
 
+pal <- colorNumeric(
+  palette = "YlGnBu",
+  domain = c(0, 100)
+)
 map <- leaflet() %>% 
-  addPolygons(data = full)
+  addPolygons(data = full,
+              fillColor = ~pal(100 - (`% White` * 100)),
+              color = "#b2aeae",
+              weight = 1,
+              fillOpacity = 1) %>% 
+  addLegend(pal = pal,
+            values = 100 - (full$`% White` * 100),
+            position = "bottomright",
+            title = "% Nonwhite in population")
 
 map

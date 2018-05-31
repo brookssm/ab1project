@@ -52,11 +52,19 @@ ui <- fluidPage(
                    came from a variety of sources, including OneBusAway, Seattle.gov, and the U.S. Census website."),
                  h3("Sources"),
                  tags$ul(
-                   tags$li("http://api.pugetsound.onebusaway.org/"),
-                   tags$li("https://github.com/seattleio/seattle-boundaries-data"),
-                   tags$li("https://data.seattle.gov/"),
-                   tags$li("https://factfinder.census.gov/faces/nav/jsf/pages/index.xhtml"))
-               )
+                   tags$li(a("OneBusAway API",
+                             href = "http://developer.onebusaway.org/modules/onebusaway-application-modules/current/api/where/index.html")),
+                   tags$li(a("Seattle.io boundary data",
+                             href = "https://github.com/seattleio/seattle-boundaries-data")),
+                   tags$li(a("Seattle Government Data",
+                             href = "https://data.seattle.gov/")),
+                   tags$li(a("American Factfinder Census Data",
+                             href = "https://factfinder.census.gov/faces/nav/jsf/pages/index.xhtml")),
+                   tags$li(a("Sound Transit Open Transit Data GTFS Files",
+                             href = "https://www.soundtransit.org/Developer-resources/Data-downloads")),
+                   tags$li(a("US Census Cartographic Boundary Shapefiles",
+                             href = "https://www.census.gov/geo/maps-data/data/cbf/cbf_tracts.html"))
+                 ))
              )
              ),
     
@@ -88,7 +96,6 @@ ui <- fluidPage(
                mainPanel(
                  h3("Map"),
                  leafletOutput("stops"),
-                 verbatimTextOutput("count"),
                  h4("Map Summary"),
                  p("Above you will notice a few things. Of all the agencies serving
                    Seattle, Metro Transit is certainly the most extensive in terms of 
@@ -120,6 +127,7 @@ ui <- fluidPage(
                    filtered by the type of offense commited."),
                  selectInput("Crime", "Select a Crime",
                              choices = crime_data$`Offense Type`)
+                 
                ),
                mainPanel(
                  leafletOutput("crime_map")
@@ -128,4 +136,3 @@ ui <- fluidPage(
     )
   )
 )
-
