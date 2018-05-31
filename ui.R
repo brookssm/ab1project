@@ -10,20 +10,55 @@ range_lon <- range(all_stops$lon)
 crime_data <- read.csv("./data/police_report_data.csv")
 
 ui <- fluidPage(
-  titlePanel("Shitstorm"),
+  titlePanel("Public Transportation in Seattle"),
   
   tabsetPanel(
     tabPanel("About",
-      p("By Seth Brooks, Sophia Thurston, Miles Goodner, Edward Wei"),
-      p("Visualizations and summaries mostly centered around bus data from the Puget Sound OneBusAway. Questions we aimed to answer were"),
-      tags$ul(
-        tags$li("What is the relationship between crime rates and access to transportation?"),
-        tags$li("What is the relationship between racial demographics and access to transportation?"),
-        tags$li("What is the density of bus stops in different socioeconomic areas?"),
-        tags$li("What neighborhoods have the quickest and most frequent connections to University District?")
-      )
-    ),
-
+             sidebarLayout(
+               sidebarPanel(
+                 h3("Public Transportation in Seattle"),
+                 h5(tags$em("by Seth Brooks, Sophia Thurston, Miles Goodner, and Edward Wei")),
+                 p("To get started, click on one of the tabs or stay on this tab to learn more about
+                         what motivated this project.")
+                 ),
+               mainPanel(
+                 h3("What is it?"),
+                 p("We asked ourselves a series of questions when starting this project, which
+                   included:"),
+                 tags$ul(
+                   tags$li("What is the relationship between crime rates and access to transportation?"),
+                   tags$li("What is the relationship between racial demographics and access to transportation?"),
+                   tags$li("What is the density of bus stops in different socioeconomic areas?"),
+                   tags$li("What neighborhoods have the quickest and most frequent connections to University District?")),
+                   
+                 p("In order to answer these questions, we decided to create a series of visualizations
+                   that could be flipped through by the user in order to see which variables correlate
+                   with density of bus stops. In this version of the app, we created a visualization that allows
+                   users to see all of the bus stops in Seattle that will get someone to University District
+                   in one ride (i.e. without having to make a transfer). We also created a map that shows these
+                   bus stops but with crime data on top, so that the user can see the relationship between crime
+                   and density of bus stops."),
+               
+                 h3("Why?"),
+                 p("We created this app because we use public transporation all the time and originally
+                   wanted to know more about how UW students get to campus everyday. We wanted to know who 
+                   has the most immediate access to UW if they are using public transportation, and then
+                   we wanted to see what other factors are related to someone's access to public transportation."),
+                
+                 h3("How?"),
+                 p("We used Leaflet to create high-resolution, interactive maps that can be 
+                   zoomed and manipulated. We also used Shiny to create our application. The data we used
+                   came from a variety of sources, including OneBusAway, Seattle.gov, and the U.S. Census website."),
+                 h3("Sources"),
+                 tags$ul(
+                   tags$li("http://api.pugetsound.onebusaway.org/"),
+                   tags$li("https://github.com/seattleio/seattle-boundaries-data"),
+                   tags$li("https://data.seattle.gov/"),
+                   tags$li("https://factfinder.census.gov/faces/nav/jsf/pages/index.xhtml"))
+               )
+             )
+             ),
+    
     tabPanel("Bus Stop Visualizer", fluid = TRUE,
              sidebarLayout(
                sidebarPanel(h3("Bus Stop Visualizer"),
