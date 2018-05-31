@@ -11,7 +11,7 @@ range_lon <- range(all_stops$lon)
 crime_data <- read.csv("./data/police_report_data.csv")
 
 ecda <- read.csv("./data/ednalysis.csv")
-months <- as.numeric(range(ecda$months_after))
+mo_s <- as.numeric(range(ecda$months_after))
 
 
 ui <- fluidPage(
@@ -136,7 +136,19 @@ ui <- fluidPage(
                mainPanel(
                  leafletOutput("crime_map")
                )
-             )
-    )
+             )),
+             
+    tabPanel("Employment and Buses",
+              sidebarLayout(
+                sidebarPanel(
+                  sliderInput('mo_after', label="Months After September 2015", min=mo_s[1], max=mo_s[2], value=mo_s)
+                ),
+                mainPanel(
+                  
+                  p("This research uses data from The Bureau of Labor Statistics and the Ride the Wave Transit Guide from Sound Transit."),
+                  
+                  plotOutput("eplot")
+                  
+                ))
   )
-)
+))

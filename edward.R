@@ -96,7 +96,7 @@ server <- function(input, output) {
 }
 
 
-p <- ggplot(ecdata, aes(x = months_after, y = unemployment.rate))+ geom_bar(stat = "identity")+
+ggplot(ecdata, aes(x = months_after, y = unemployment.rate))+ geom_bar(stat = "identity")+
   geom_smooth(mapping = aes(x = months_after, y = ch_adj, color = "green"), method = "loess")+
   geom_smooth(mapping = aes(x = months_after, y = new_r, color = "red"), method = "loess")+
   ggtitle("Unmployment rate and bus changes/new routes")+
@@ -104,13 +104,13 @@ p <- ggplot(ecdata, aes(x = months_after, y = unemployment.rate))+ geom_bar(stat
   labs(x= "Months after September 2015")+
   labs(y= "Percentage and number")
   
-f <- ggplot(filtered())+
-  geom_smooth(mapping = aes(x = months_after, y = ch_adj, color = "green"), method = "loess")+
-  geom_smooth(mapping = aes(x = months_after, y = new_r, color = "red"), method = "loess")+
-  ggtitle("Unmployment rate and bus changes/new routes")+
-  guides(colour = FALSE)+
-  labs(x= "Months after September 2015")+
-  labs(y= "Percentage and number")
+
+ecdata <- read.csv("./data/ednalysis.csv")
+
+ecdata <- mutate(ecdata, months_after = as.numeric(months_after))%>%
+  mutate(unemployment.rate = as.numeric(unemployment.rate)) %>%
+  mutate(ch_adj = as.numeric(ch_adj))%>%
+  mutate(new_r = as.numeric(new_r))
 
 output$plot <- renderPlot({ 
   p <- ggplot(filtered(), aes(x = months_after, y = unemployment.rate))+ 
@@ -126,18 +126,7 @@ output$plot <- renderPlot({
   
   ,
   
-  tabPanel("Route Additions, Schedule Changes and Employment",
-           sidebarLayout(
-             sidebarPanel(
-               sliderInput('mo_after', label="Months After September 2015", min=months[1], max=months[2], value=months)
-             ),
-             mainPanel(
-               
-               p("This research uses data from The Bureau of Labor Statistics and the Ride the Wave Transit Guide from Sound Transit."),
-               
-               plotOutput(plot)
-               
-             ))
+  
            
            ,
            

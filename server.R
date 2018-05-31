@@ -80,15 +80,20 @@ server <- function(input, output) {
   
 
   
-  filtered <- reactive({
-    data <- ecdata %>%
-      filter(months_after > input$mo_after[1] & months_after < input$mo_after[2]) %>%
-      return(data)
-  })
-  
-  output$plot <- renderPlot({ 
-    ggplot(filtered(), aes(x = months_after, y = unemployment.rate))+ 
-      geom_bar(stat = "identity")
+  ed_rv <- reactive({
+    ranver <- ecdata %>%
+      filter(months_after > input$mo_after[1] & months_after < input$mo_after[2])
+    return(ranver)
+    })
+
+  output$eplot <- renderPlot({ 
+    ggplot(ed_rv(), aes(x = months_after, y = unemployment.rate))+ geom_bar(stat = "identity")+
+      geom_smooth(mapping = aes(x = months_after, y = ch_adj, color = "green"), method = "loess")+
+      geom_smooth(mapping = aes(x = months_after, y = new_r, color = "red"), method = "loess")+
+      ggtitle("Unmployment rate and bus changes/new routes")+
+      guides(colour = FALSE)+
+      labs(x= "Months after September 2015")+
+      labs(y= "Percentage and number")
     
   })
   
