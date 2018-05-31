@@ -1,35 +1,25 @@
-library(jsonlite)
-library(httr)
-library(knitr)
-library(dplyr)
-library(ggplot2)
-library(ggmap)
-library(mapdata)
-library(geojsonio)
-library(leaflet)
 library(shiny)
-
-all_stops <- read.csv("./data/bus_stops_data.csv")
+source("busstopmap.R")
 
 ui <- fluidPage(
   tabsetPanel(
-    tabPanel("Bus Stops", fluid = TRUE,
+    tabPanel("Bus Stops Map", fluid = TRUE,
              sidebarLayout(
-               sidebarPanel(selectInput("Agency", "Select Transit Agency", 
+               sidebarPanel(selectInput("agency", "Select Transit Agency", 
                                         choices = all_stops$agency, selected = "")),
                mainPanel(
-                 leafletOutput("Stops")
+                 leafletOutput("stops"),
+                 p(),
+                 actionButton("recalc", "New points")
                )
              )
-    )
     ),
-  
+    
     tabPanel("plot", fluid = TRUE,
              sidebarLayout(
-               sidebarPanel(
-                 mainPanel(fluidRow(
-                 column(7,  leafletOutput("")),
-                 column(5, leafletOutput(""))   
+               sidebarPanel(sliderInput("year", "Year:", min = 1968, 
+                                        max = 2009, value = 2009, sep='')),
+               mainPanel(fluidRow(   
                )
                )
              )
