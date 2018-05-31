@@ -4,8 +4,10 @@ library(leaflet)
 library(geojsonio)
 
 source("busstopmap.R")
+source("crimedata.R")
 range_lat <- range(all_stops$lat)
 range_lon <- range(all_stops$lon)
+crime_data <- read.csv("./data/police_report_data.csv")
 
 ui <- fluidPage(
   tabsetPanel(
@@ -13,7 +15,9 @@ ui <- fluidPage(
              sidebarLayout(
                sidebarPanel(checkboxGroupInput("agency", "Select Transit Agency:", 
                                         choices = all_stops$agency %>% unique(), 
-                                        selected = "Metro Transit"),
+                                        selected = c("Metro Transit",
+                                                     "Sound Transit",
+                                                     "Community Transit")),
                             sliderInput('lat_choice', label = "Adjust Latitude:", 
                                         min=range_lat[1], max = range_lat[2], 
                                         value = range_lat, step = 0.001),
@@ -28,13 +32,14 @@ ui <- fluidPage(
              )
     ),
     
-    tabPanel("plot", fluid = TRUE,
+    tabPanel("Crime Data",
              sidebarLayout(
-               sidebarPanel(sliderInput("year", "Year:", min = 1968, 
-                                        max = 2009, value = 2009, sep='')),
-               mainPanel(fluidRow(   
-               )
-               )
+               sidebarPanel(
+                 unique(selectInput("Crime", "Select a Crime",
+                                    choices = crime_data$`Offense Type`))
+               ),
+               mainPanel(
+                 leafletOutput("crime_map"))
              )
     )
   )
