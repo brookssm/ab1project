@@ -2,6 +2,7 @@ library(shiny)
 library(dplyr)
 library(leaflet)
 library(geojsonio)
+library(ggplot2)
 
 source("busstopmap.R")
 source("crimedata.R")

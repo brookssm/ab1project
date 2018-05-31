@@ -2,6 +2,7 @@ library(shiny)
 library(dplyr)
 library(leaflet)
 library(geojsonio)
+library(ggplot2)
 
 server <- function(input, output) {
   topoData <- geojsonio::geojson_read("./data/geojson/neighborhoods.geojson",
