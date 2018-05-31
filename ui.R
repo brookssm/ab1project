@@ -48,7 +48,15 @@ ui <- fluidPage(
                                     choices = crime_data$`Offense Type`))
                ),
                mainPanel(
-                 leafletOutput("crime_map"))
+                 leafletOutput("crime_map"),
+                 p("This map displays the relationship between crime rates in
+                   Seattle and the bus stops that lead to University District.
+                   These offenses were reported within the last three months
+                   and they are represented by the red spots on the map. The
+                   blue spots represent the bus stops. When clicking on the crimes,
+                   the offense and the date reported appears. When clicking on
+                   bus stops, the agency and route ID appears. The map can be be
+                   filtered by the type of offense commited.")
              )
     )
   )
