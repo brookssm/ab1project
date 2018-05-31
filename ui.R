@@ -18,7 +18,7 @@ ui <- fluidPage(
                sidebarPanel(
                  h3("Public Transportation in Seattle"),
                  h5(tags$em("by Seth Brooks, Sophia Thurston, Miles Goodner, and Edward Wei")),
-                 p("To get started, click on one of the tabs or stay on this tab to learn more about
+                 p(tags$em("To get started, "), "click on one of the tabs or stay on this tab to learn more about
                          what motivated this project.")
                  ),
                mainPanel(
@@ -85,8 +85,20 @@ ui <- fluidPage(
                  p(tags$em("http://api.pugetsound.onebusaway.org/", 
                            "https://github.com/seattleio/seattle-boundaries-data"))),
                mainPanel(
+                 h3("Map"),
                  leafletOutput("stops"),
+                 h4("Map Summary"),
+                 p("Above you will notice a few things. Of all the agencies serving
+                   Seattle, Metro Transit is certainly the most extensive in terms of 
+                   access to University District. You will also notice that West Seattle, 
+                   South Seattle, and some of North Seattle/Shoreline are barely serviced
+                   with good access to University District. The areas with the most direct connections
+                   to University District are the neighborhoods immediately surrounding University
+                   District and also Downtown Seattle."),
                  hr(),
+                 h4("Table"),
+                 p("Here you will find the exact coordinates, route number, and agency
+                   associated with all the stops displayed above."),
                  dataTableOutput("stops_table")
                )
              )
