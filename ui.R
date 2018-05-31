@@ -117,8 +117,11 @@ ui <- fluidPage(
                    the offense and the date reported appears. When clicking on
                    bus stops, the agency and route ID appears. The map can be be
                    filtered by the type of offense commited."),
-                 selectInput("Crime", "Select a Crime",
-                             choices = crime_data$`Offense Type`)
+                 #selectInput("Crime", "Select a Crime",
+                             #choices = crime_data$`Offense Type`)
+                 checkboxGroupInput("Month", "Select a Month",
+                                    choices = crime_data$Month)
+                 
                ),
                mainPanel(
                  leafletOutput("crime_map")
