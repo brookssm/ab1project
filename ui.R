@@ -10,7 +10,20 @@ range_lon <- range(all_stops$lon)
 crime_data <- read.csv("./data/police_report_data.csv")
 
 ui <- fluidPage(
+  titlePanel("Shitstorm"),
+  
   tabsetPanel(
+    tabPanel("About",
+      p("By Seth Brooks, Sophia Thurston, Miles Goodner, Edward Wei"),
+      p("Visualizations and summaries mostly centered around bus data from the Puget Sound OneBusAway. Questions we aimed to answer were"),
+      ul(
+        li("What is the relationship between crime rates and access to transportation?"),
+        li("What is the relationship between racial demographics and access to transportation?"),
+        li("What is the density of bus stops in different socioeconomic areas?"),
+        li("What neighborhoods have the quickest and most frequent connections to University District?")
+      )
+    ),
+    
     tabPanel("Bus Stop Map", fluid = TRUE,
              sidebarLayout(
                sidebarPanel(h3("Bus Stop Viewer"),
