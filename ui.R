@@ -3,7 +3,6 @@ library(dplyr)
 library(leaflet)
 library(geojsonio)
 
-
 source("busstopmap.R")
 range_lat <- range(all_stops$lat)
 range_lon <- range(all_stops$lon)

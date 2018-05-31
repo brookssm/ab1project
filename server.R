@@ -8,6 +8,7 @@ server <- function(input, output) {
                                       what = "sp")
   agencycolor <- colorFactor(c("#00ffb3", "#ff4c00", "#1300ff"), all_stops$agency)
   all_stops[1] <- NULL
+  
   filtered_stops <- reactive({
     stops <- all_stops %>% 
       filter(agency == input$agency) %>% 
@@ -38,6 +39,10 @@ server <- function(input, output) {
   
   output$stops_table <- renderDataTable({
     return(filtered_stops())
-  })
-  
+  }, options = list(columns = list(
+         list(title = 'Latitude'),
+         list(title = 'Longitude'),
+         list(title = 'Route ID'),
+         list(title = 'Agency')))
+  )
 }
