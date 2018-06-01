@@ -67,6 +67,7 @@ server <- function(input, output) {
     return(rever)
   })
   
+  
   output$crime_map <- renderLeaflet({
     
     crime_map <- leaflet(crime_data) %>% setView(lng = -122.3312, lat = 47.62199, zoom = 10) %>%
