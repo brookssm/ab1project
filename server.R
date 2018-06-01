@@ -55,7 +55,7 @@ server <- function(input, output) {
     
     crime_map <- leaflet(crime_data) %>% setView(lng = -122.3312, lat = 47.62199, zoom = 10) %>%
       addTiles() %>%
-      addCircles(data = crime_reactive(), ~Longitude, ~Latitude,
+      addCircles(~Longitude, ~Latitude,
                  popup = paste0("Date Reported: ",
                                 crime_data$`Date Reported`),
                  color = ~color(crime_data$Month)
@@ -66,10 +66,7 @@ server <- function(input, output) {
         color = "Blue"
       )
     
-    crime_reactive <- reactive({
-      filter <- crime_data %>%
-        filter(`Offense Type` == input$Crime)
-    })
+
     
   })
 }
