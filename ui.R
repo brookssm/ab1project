@@ -128,14 +128,28 @@ ui <- fluidPage(
                    and they are represented by the red spots on the map. The
                    blue spots represent the bus stops. When clicking on the crimes,
                    the offense and the date reported appears. When clicking on
-                   bus stops, the agency and route ID appears. The map can be be
-                   filtered by the type of offense commited."),
-                 selectInput('Crime', "Select a Crime",
-                             choices = crime_data$`Offense Type`)
+                   bus stops, the agency and route ID appears. Neighborhoods are also
+                   displayed when clicking on different areas on the map. The map can
+                   be filtered by the type of offense commited."),
+                 selectInput(inputId = "crime", label = "Choose a Crime:",
+                             choices = crime_data$Offense.Description,
+                             selected = "Theft", multiple = TRUE)
                  
                  ),
                mainPanel(
-                 leafletOutput("crime_map")
+                 h3("Map"),
+                 leafletOutput("crime_map"),
+                 h4("Summary"),
+                 p("When specifying the crime of interest, you can see that a large majority
+                   of crimes in Seattle occur in the downtown area. This is where several
+                   routes that lead to University District begin. Crimes in other areas seem
+                   to be more spread out. The map also shows that many crimes occur in 
+                   areas close to bus stops."),
+                 hr(),
+                 h3("Table"),
+                 p("First choose one or more crimes then a table will display the crime commited,
+                   the month and year it occured, and where it occured using longitude and latitude"),
+                 dataTableOutput("crime_table")
                )
              )),
     

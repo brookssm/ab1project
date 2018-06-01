@@ -57,28 +57,44 @@ server <- function(input, output) {
   )
   
   crime_reactive <- reactive({
-    rever <- crime_data %>%
-      filter(`Offense Type` == input$Crime)
-    return(rever)
+    rever <- crime_map_data %>%
+      filter(Offense.Description %in% input$crime)
+  })
+  
+  crime_table_reactive <- reactive({
+    react <- crime_table_data %>%
+      filter(Offense.Description %in% input$crime)
   })
   
   output$crime_map <- renderLeaflet({
-    
-    crime_map <- leaflet(crime_data) %>% setView(lng = -122.3312, lat = 47.62199, zoom = 10) %>%
-      addTiles() %>%
+    crime_map <- leaflet(topoData) %>% setView(-122.3035, 47.6553, zoom = 11) %>%
+      addTiles('http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', 
+               attribution='Map tiles by <a href="http://stamen.com">Stamen Design</a>, 
+               <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy;
+               <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>') %>%
+      addPolygons(stroke = TRUE, smoothFactor = 0.1, fillOpacity = 0,
+                  popup = paste0(topoData$name, ", ", topoData$city), color = "white", 
+                  weight = 1, opacity = 0.5) %>% 
       addCircles(data = crime_reactive(), ~Longitude, ~Latitude,
-                 popup = paste0("Date Reported: ",
-                                crime_data$`Date Reported`),
-                 color = ~color(crime_data$Month)
-      ) %>%
-      addCircles(
-        data = bus_stops, ~lon, ~lat,
-        popup = paste0(bus_stops$route_id),
-        color = "Blue"
-      )
-    
-    
+                 popup = paste0(crime_map_data$Offense.Description, ", Date Reported: ",
+                                crime_map_data$Date.Reported),
+                 color = "red", stroke = FALSE, weight = 10, radius = 100,
+                 fillOpacity = 0.5) %>% 
+      addCircles(data = bus_stops, ~lon, ~lat,
+                 popup = paste0(all_stops$agency, ", ", all_stops$route_id),
+                 color = "blue", stroke = FALSE, weight = 10, radius = 100,
+                 fillOpacity = 0.8)
   })
+  
+  output$crime_table <- renderDataTable({
+    return(crime_table_reactive())
+  }, options = list(columns = list(
+    list(title = "Offense"),
+    list(title = "Month"),
+    list(title = "Year"),
+    list(title = "Longitude"),
+    list(title = "Latitude")))
+  )
   
   
   
