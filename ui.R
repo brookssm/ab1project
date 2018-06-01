@@ -158,11 +158,18 @@ ui <- fluidPage(
                ),
                mainPanel(
                  
-                 p("This research uses data from The Bureau of Labor Statistics and the Ride the Wave Transit Guide from Sound Transit."),
+                 p("This research uses data from The Bureau of Labor Statistics and the Ride the Wave Transit Guide from 
+                   Sound Transit."),
                  
                  plotOutput("eplot"),
                  
-                 p("The green line represents changes in bus schedules and the red line represents added trips.")
+                 p("The greenish blue line represents changes in trip times and the red line represents added trips for bus routes. 
+                   The bar graph represents the unemployment rate. It is important to know that major changes to the bus 
+                   schedules change once every six months. As you can see, the employment rates in Seattle slightly creeped
+                   down over time. This chart would be much more interesting if we went back to the 2008 financial crisis. 
+                   However, the data for the changes in the bus schedules were not available online with the latest going back
+                   to only September 2015. That is why the chart has an x-axis of months after that date. Since it is the
+                   beginning of the analysis.")
                  
                ))
     ),
