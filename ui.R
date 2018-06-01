@@ -100,6 +100,7 @@ ui <- fluidPage(
                mainPanel(
                  h3("Map"),
                  leafletOutput("stops"),
+                 verbatimTextOutput("count"),
                  h4("Map Summary"),
                  p("Above you will notice a few things. Of all the agencies serving
                    Seattle, Metro Transit is certainly the most extensive in terms of 
@@ -109,7 +110,7 @@ ui <- fluidPage(
                    to University District are the neighborhoods immediately surrounding University
                    District and also Downtown Seattle."),
                  hr(),
-                 h4("Table"),
+                 h3("Table"),
                  p("Here you will find the exact coordinates, route number, and agency
                    associated with all the stops displayed above."),
                  dataTableOutput("stops_table")
@@ -129,8 +130,7 @@ ui <- fluidPage(
                    the offense and the date reported appears. When clicking on
                    bus stops, the agency and route ID appears. The map can be be
                    filtered by the type of offense commited."),
-                 selectInput('Crime', "Select a Crime",
-                             list(unique(crime_data$`Offense Type`)))
+                 selectInput('Crime', "Select a Crime", choices = crime_data$`Offense Type`)
                  
                ),
                mainPanel(
@@ -153,4 +153,5 @@ ui <- fluidPage(
                   
                 ))
   )
-))
+)
+)

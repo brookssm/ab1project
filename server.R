@@ -17,11 +17,15 @@ server <- function(input, output) {
   
   filtered_stops <- reactive({
     stops <- all_stops %>% 
-      filter(agency == input$agency) %>% 
+      filter(agency %in% input$agency) %>% 
       filter(lon >= input$lon_choice[1] & 
                lon <= input$lon_choice[2]) %>% 
       filter(lat >= input$lat_choice[1] & 
                lat <= input$lat_choice[2])
+  })
+  
+  output$count <- renderText({
+    nrow(filtered_stops())
   })
   
   output$stops <- renderLeaflet({
@@ -52,9 +56,10 @@ server <- function(input, output) {
          list(title = 'Agency')))
   )
   
-  output$count <- renderPrint({
-    summary(filtered_stops())
+  output$count <- renderText({
+    paste0("There are ", nrow(filtered_stops()), " bus stops currently being displayed.")
   })
+  
   
   crime_reactive <- reactive({
     rever <- crime_data %>%
@@ -79,14 +84,12 @@ server <- function(input, output) {
     
   })
   
-
-  
   ed_rv <- reactive({
     ranver <- ecdata %>%
       filter(months_after > input$mo_after[1] & months_after < input$mo_after[2])
     return(ranver)
-    })
-
+  })
+  
   output$eplot <- renderPlot({ 
     ggplot(ed_rv(), aes(x = months_after, y = unemployment.rate))+ geom_bar(stat = "identity")+
       geom_smooth(mapping = aes(x = months_after, y = ch_adj, color = "green"), method = "loess")+
@@ -95,6 +98,7 @@ server <- function(input, output) {
       guides(colour = FALSE)+
       labs(x= "Months after September 2015")+
       labs(y= "Percentage and number")
+    
   })
   
 
