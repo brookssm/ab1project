@@ -46,7 +46,7 @@ ecdata <- read.csv("./data/ednalysis.csv")
 #define User interface
 
 #max and min of months
-months <- range(ecdata$months_after)
+months <- as.numeric(range(ecdata$months_after))
 
 
 ui <- fluidPage(
@@ -96,3 +96,48 @@ server <- function(input, output) {
 }
 
 
+ggplot(ecdata, aes(x = months_after, y = unemployment.rate))+ geom_bar(stat = "identity")+
+  geom_smooth(mapping = aes(x = months_after, y = ch_adj, color = "green"), method = "loess")+
+  geom_smooth(mapping = aes(x = months_after, y = new_r, color = "red"), method = "loess")+
+  ggtitle("Unmployment rate and bus changes/new routes")+
+  guides(colour = FALSE)+
+  labs(x= "Months after September 2015")+
+  labs(y= "Percentage and number")
+  
+
+ecdata <- read.csv("./data/ednalysis.csv")
+
+ecdata <- mutate(ecdata, months_after = as.numeric(months_after))%>%
+  mutate(unemployment.rate = as.numeric(unemployment.rate)) %>%
+  mutate(ch_adj = as.numeric(ch_adj))%>%
+  mutate(new_r = as.numeric(new_r))
+
+output$plot <- renderPlot({ 
+  p <- ggplot(filtered(), aes(x = months_after, y = unemployment.rate))+ 
+    geom_bar(stat = "identity")+ 
+    geom_smooth(mapping = aes(x = months_after, y = ch_adj, color = "green"), method = "loess")+
+    geom_smooth(mapping = aes(x = months_after, y = new_r, color = "red"), method = "loess")+
+    ggtitle("Unmployment rate and bus changes/new routes")+
+    guides(colour = FALSE)+
+    labs(x= "Months after September 2015")+
+    labs(y= "Percentage and number")
+  
+  return(p)
+  
+  ,
+  
+  
+           
+           ,
+           
+           tabPanel("Crime Data",
+                    sidebarLayout(
+                      sidebarPanel(
+                        unique(selectInput("Crime", "Select a Crime",
+                                           choices = crime_data$`Offense Type`))
+                      ),
+                      mainPanel(
+                        leafletOutput("crime_map"))
+                    )
+           )
+  )

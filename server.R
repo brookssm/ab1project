@@ -3,6 +3,11 @@ library(dplyr)
 library(leaflet)
 library(geojsonio)
 library(ggplot2)
+ecdata <- read.csv("./data/ednalysis.csv")
+ecdata <- mutate(ecdata, months_after = as.numeric(months_after))%>%
+  mutate(unemployment.rate = as.numeric(unemployment.rate)) %>%
+  mutate(ch_adj = as.numeric(ch_adj))%>%
+  mutate(new_r = as.numeric(new_r))
 
 server <- function(input, output) {
   topoData <- geojsonio::geojson_read("./data/geojson/neighborhoods.geojson",
@@ -51,6 +56,12 @@ server <- function(input, output) {
     summary(filtered_stops())
   })
   
+  crime_reactive <- reactive({
+    rever <- crime_data %>%
+      filter(`Offense Type` == input$Crime)
+    return(rever)
+  })
+  
   output$crime_map <- renderLeaflet({
     
     crime_map <- leaflet(crime_data) %>% setView(lng = -122.3312, lat = 47.62199, zoom = 10) %>%
@@ -66,7 +77,27 @@ server <- function(input, output) {
         color = "Blue"
       )
     
-
-    
   })
+  
+
+  
+  ed_rv <- reactive({
+    ranver <- ecdata %>%
+      filter(months_after > input$mo_after[1] & months_after < input$mo_after[2])
+    return(ranver)
+    })
+
+  output$eplot <- renderPlot({ 
+    ggplot(ed_rv(), aes(x = months_after, y = unemployment.rate))+ geom_bar(stat = "identity")+
+      geom_smooth(mapping = aes(x = months_after, y = ch_adj, color = "green"), method = "loess")+
+      geom_smooth(mapping = aes(x = months_after, y = new_r, color = "red"), method = "loess")+
+      ggtitle("Unmployment rate and bus changes/new routes")+
+      guides(colour = FALSE)+
+      labs(x= "Months after September 2015")+
+      labs(y= "Percentage and number")
+  })
+  
+
+  
+  
 }

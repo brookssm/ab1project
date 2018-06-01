@@ -10,6 +10,10 @@ range_lat <- range(all_stops$lat)
 range_lon <- range(all_stops$lon)
 crime_data <- read.csv("./data/police_report_data.csv")
 
+ecda <- read.csv("./data/ednalysis.csv")
+mo_s <- as.numeric(range(ecda$months_after))
+
+
 ui <- fluidPage(
   titlePanel("Public Transportation in Seattle"),
   
@@ -125,14 +129,28 @@ ui <- fluidPage(
                    the offense and the date reported appears. When clicking on
                    bus stops, the agency and route ID appears. The map can be be
                    filtered by the type of offense commited."),
-                 selectInput("Crime", "Select a Crime",
-                             choices = crime_data$`Offense Type`)
+                 selectInput('Crime', "Select a Crime",
+                             list(unique(crime_data$`Offense Type`)))
                  
                ),
                mainPanel(
                  leafletOutput("crime_map")
                )
-             )
-    )
+             )),
+             
+    tabPanel("Employment and Buses",
+              sidebarLayout(
+                sidebarPanel(
+                  sliderInput('mo_after', label="Months After September 2015", min=mo_s[1], max=mo_s[2], value=mo_s)
+                ),
+                mainPanel(
+                  
+                  p("This research uses data from The Bureau of Labor Statistics and the Ride the Wave Transit Guide from Sound Transit."),
+                  
+                  plotOutput("eplot"),
+                  
+                  p("The green line represents changes in bus schedules and the red line represents added trips.")
+                  
+                ))
   )
-)
+))
