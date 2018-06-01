@@ -32,8 +32,9 @@ acs_data <- read.csv("./data/census/ACS_16_5YR_B02001_with_ann.csv", stringsAsFa
              "% Other", "% Two or more races",
              "GEOID", "Census Tract")) %>% 
   mutate(`Census Tract` = gsub("[^0-9.]", "", `Census Tract`))
-full <- tract
-full@data <- left_join(tract@data, acs_data)
+
+census_map <- tract
+census_map@data <- left_join(tract@data, acs_data)
 
 # https://gis.stackexchange.com/questions/89512/r-dealing-with-missing-data-in-spatialpolygondataframes-for-moran-test
 # FUNCTION TO REMOVE NA's IN sp DataFrame OBJECT
@@ -55,21 +56,32 @@ sp.na.omit <- function(x, margin=1) {
 
 # King County Polygon Geometry and Census Demographics
 # in SpatialPolygonDataFrame
-full <- sp.na.omit(full)
+census_map <- sp.na.omit(census_map)
 
 pal <- colorNumeric(
   palette = "YlGnBu",
-  domain = c(0, 100)
+  domain = c(0, 1)
 )
-map <- leaflet() %>% 
-  addPolygons(data = full,
-              fillColor = ~pal(100 - (`% White` * 100)),
+nonwhite_map <- leaflet() %>% 
+  addPolygons(data = census_map,
+              fillColor = ~pal(1 - `% White`),
               color = "#b2aeae",
               weight = 1,
               fillOpacity = 1) %>% 
   addLegend(pal = pal,
-            values = 100 - (full$`% White` * 100),
+            values = 1 - (census_map$`% White`),
             position = "bottomright",
             title = "% Nonwhite in population")
 
-map
+make_kingco_demo_map <- function(demographic, description_string) {
+  leaflet() %>% 
+    addPolygons(data = census_map,
+                fillColor = ~pal(demographic),
+                color = "#b2aeae",
+                weight = 1,
+                fillOpacity = 1) %>% 
+    addLegend(pal = pal,
+              values = demographic,
+              position = "bottomright",
+              title = paste("%", description_string, "in population"))
+}

@@ -165,5 +165,15 @@ ui <- fluidPage(
                  p("The green line represents changes in bus schedules and the red line represents added trips.")
                  
                ))
-    )
+    ),
+    tabPanel("Demographics of King County",
+             sidebarLayout(
+               sidebarPanel(
+                 "Controls here"
+               ),
+               mainPanel(
+                 leafletOutput("demographics_map")
+               )
+             )
+             )
     ))

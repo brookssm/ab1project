@@ -3,6 +3,7 @@ library(dplyr)
 library(leaflet)
 library(geojsonio)
 library(ggplot2)
+source("censusmapping.R")
 ecdata <- read.csv("./data/ednalysis.csv", stringsAsFactors=FALSE, fileEncoding="latin1")
 ecdata <- mutate(ecdata, months_after = as.numeric(months_after))%>%
   mutate(unemployment.rate = as.numeric(unemployment.rate)) %>%
@@ -115,7 +116,9 @@ server <- function(input, output) {
     
   })
   
-  
+  output$demographics_map <- renderLeaflet({
+    nonwhite_map
+  })
   
   
 }
