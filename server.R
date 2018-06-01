@@ -12,7 +12,7 @@ ecdata <- mutate(ecdata, months_after = as.numeric(months_after))%>%
 server <- function(input, output) {
   topoData <- geojsonio::geojson_read("./data/geojson/neighborhoods.geojson",
                                       what = "sp")
-  agencycolor <- colorFactor(c("#00ffb3", "#ff4c00", "#1300ff"), all_stops$agency)
+  agencycolor <- colorFactor(c("#ff5683", "#2bd8ff", "#ffec47"), all_stops$agency)
   all_stops[1] <- NULL
   
   filtered_stops <- reactive({
@@ -33,11 +33,11 @@ server <- function(input, output) {
                <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>') %>% 
       addPolygons(stroke = TRUE, smoothFactor = 0.1, fillOpacity = 0,
                   popup = paste0(topoData$name, ", ", topoData$city), color = "white", 
-                  weight = 1, opacity = 0.5) %>% 
+                  weight = 1, opacity = 0.4) %>% 
       addCircles(data = filtered_stops(), ~lon, ~lat, popup = paste0(all_stops$agency, ", ", 
                                                                      all_stops$route_id), 
                  weight = 10, radius = 100, color = ~agencycolor(agency), 
-                 stroke = FALSE, fillOpacity = 1.0) %>%
+                 stroke = FALSE, fillOpacity = 0.8) %>%
       addLegend("bottomright", pal = agencycolor, values = ~all_stops$agency,
                 title = "Transit Agency",
                 opacity = 0.8, data = all_stops)

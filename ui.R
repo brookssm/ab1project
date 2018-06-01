@@ -72,16 +72,14 @@ ui <- fluidPage(
                  )
                  ),
     
-    tabPanel("Bus Stop Visualizer", fluid = TRUE,
+    tabPanel("Bus Stop Map", fluid = TRUE,
              sidebarLayout(
-               sidebarPanel(h3("Bus Stop Visualizer"),
-                            p("Here you can view all the bus stops that will get you on
-                              a bus to University District without a transfer. The stops can 
+               sidebarPanel(h3("Bus Stop Map"),
+                            p("Here you can view all the bus stops that will get you to University District without a transfer. The stops can 
                               be filtered by the latitude, longitude, and transit agency. Points on the map represent different bus stops 
                               and the colors indicate the transit agency the route belongs to. The stops can be clicked to 
                               show the route and transit agency associated with them. Additionally, the map
                               can be clicked to show you what neighborhood you are in. "),
-                            hr(),
                             checkboxGroupInput("agency", "Select Transit Agency:", 
                                                choices = all_stops$agency %>% unique(), 
                                                selected = c("Metro Transit",
