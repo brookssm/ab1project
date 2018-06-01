@@ -5,9 +5,9 @@ library(httr)
 library(leaflet)
 library(maps)
 
-bus_stops <- read.csv("./data/bus_stops_data.csv", stringsAsFactors = FALSE)
-crime_data <- read.csv("./data/police_report_data.csv",
-                       stringsAsFactors = FALSE)
+bus_stops <- read.csv("./data/bus_stops_data.csv", , stringsAsFactors=FALSE, fileEncoding="latin1")
+crime_data <- read.csv("./data/police_report_data.csv"
+                       , stringsAsFactors=FALSE, fileEncoding="latin1")
 crime_data <- select(crime_data, Offense.Type, Offense.Description,
                      Date.Reported, Month, Year, Longitude,
                      Latitude)

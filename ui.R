@@ -8,9 +8,9 @@ source("busstopmap.R")
 source("crimedata.R")
 range_lat <- range(all_stops$lat)
 range_lon <- range(all_stops$lon)
-crime_data <- read.csv("./data/police_report_data.csv")
+crime_data <- read.csv("./data/police_report_data.csv", stringsAsFactors=FALSE, fileEncoding="latin1")
 
-ecda <- read.csv("./data/ednalysis.csv")
+ecda <- read.csv("./data/ednalysis.csv", stringsAsFactors=FALSE, fileEncoding="latin1")
 mo_s <- as.numeric(range(ecda$months_after))
 
 

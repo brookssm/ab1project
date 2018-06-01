@@ -3,7 +3,7 @@ library(dplyr)
 library(leaflet)
 library(geojsonio)
 library(ggplot2)
-ecdata <- read.csv("./data/ednalysis.csv")
+ecdata <- read.csv("./data/ednalysis.csv", stringsAsFactors=FALSE, fileEncoding="latin1")
 ecdata <- mutate(ecdata, months_after = as.numeric(months_after))%>%
   mutate(unemployment.rate = as.numeric(unemployment.rate)) %>%
   mutate(ch_adj = as.numeric(ch_adj))%>%

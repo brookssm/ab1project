@@ -11,8 +11,7 @@ tract@data$GEOID <- as.character(tract@data$GEOID)
 # American Community Survey demographic data for King County
 # margin of error can be *very* high, averaged over 5 years
 # for a *general idea* of how neighborhoods have looked
-acs_data <- read.csv("./data/census/ACS_16_5YR_B02001_with_ann.csv",
-                     stringsAsFactors = F) %>% 
+acs_data <- read.csv("./data/census/ACS_16_5YR_B02001_with_ann.csv", stringsAsFactors=FALSE, fileEncoding="latin1") %>% 
   mutate(GEO.id2 = as.character(GEO.id2)) %>% 
   select(starts_with("HD01"), -HD01_VD09, -HD01_VD10,
          GEO.id2, `GEO.display.label`) %>% 

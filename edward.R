@@ -5,7 +5,7 @@ library("ggplot2")
 #Make dataframe for changes in bus routes since September 2015, new trips, etc. Schedule changes and new trips
 #We can have schedule changes and new trips
 
-ecdata <- read.csv("./data/econ_data.csv")
+ecdata <- read.csv("./data/econ_data.csv", stringsAsFactors=FALSE, fileEncoding="latin1")
 # cut off to September 2015, where it is relevant for me
 ecdata <- ecdata [93:124,]
 
@@ -41,7 +41,7 @@ colnames(ecdata)[7] <- "months_after"
 #setwd("./data")
 #write.csv(file="ednalysis.csv", ecdata)
 
-ecdata <- read.csv("./data/ednalysis.csv")
+ecdata <- read.csv("./data/ednalysis.csv", stringsAsFactors=FALSE, fileEncoding="latin1")
 
 #define User interface
 
@@ -105,7 +105,7 @@ ggplot(ecdata, aes(x = months_after, y = unemployment.rate))+ geom_bar(stat = "i
   labs(y= "Percentage and number")
 
 
-ecdata <- read.csv("./data/ednalysis.csv")
+ecdata <- read.csv("./data/ednalysis.csv", stringsAsFactors=FALSE, fileEncoding="latin1")
 
 ecdata <- mutate(ecdata, months_after = as.numeric(months_after))%>%
   mutate(unemployment.rate = as.numeric(unemployment.rate)) %>%
