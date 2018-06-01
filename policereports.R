@@ -7,8 +7,7 @@ library(ggmap)
 library(mapdata)
 library(leaflet)
 
-incident_response <- read.csv("./data/police_report_data.csv", 
-                              stringsAsFactors = FALSE)
+incident_response <- read.csv("./data/police_report_data.csv", stringsAsFactors=FALSE, fileEncoding="latin1")
 
 incident_response <- incident_response %>% 
   select(Offense.Type, Summarized.Offense.Description, Date.Reported, Month,

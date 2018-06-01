@@ -1,0 +1,12 @@
+name: ab1project
+title: ab1project
+username:
+account: brookssm
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 351873
+bundleId: 1405981
+url: https://brookssm.shinyapps.io/ab1project/
+when: 1527885519.0865
+asMultiple: FALSE
+asStatic: FALSE

@@ -5,31 +5,23 @@ library(httr)
 library(leaflet)
 library(maps)
 
-bus_stops <- read.csv("./data/bus_stops_data.csv", stringsAsFactors = FALSE)
-crime_data <- read.csv("./data/police_report_data.csv",
-                       stringsAsFactors = FALSE)
-crime_data <- select(crime_data, Offense.Type, Offense.Description,
+#Creates csv files for bus stop data and crime data
+bus_stops <- read.csv("./data/bus_stops_data.csv", stringsAsFactors=FALSE, fileEncoding="latin1")
+crime_data <- read.csv("./data/police_report_data.csv"
+                       , stringsAsFactors=FALSE, fileEncoding="latin1")
+
+#Creates a data frame selecting crime data that will be used for a map
+crime_map_data <- select(crime_data, Offense.Type, Offense.Description,
                      Date.Reported, Month, Year, Longitude,
                      Latitude)
-names(crime_data) <- c("Offense Type", "Offense Description", "Date Reported",
-                      "Month", "Year", "Longitude", "Latitude")
-crime_data <- filter(crime_data, Year == "2018") %>%
+#Filters the selected crime data
+crime_map_data <- filter(crime_data, Year == "2018") %>%
   filter( Month > "2")
 
-color <- colorFactor("Reds", crime_data$Month)
-
-crime_map <- leaflet(crime_data) %>% setView(lng = -122.3312, lat = 47.62199, zoom = 10) %>%
-  addTiles() %>%
-  addCircles(
-    ~Longitude,
-    ~Latitude,
-    popup = paste0("Offense: ", crime_data$`Offense Description`, ", Date Reported: ",
-                   crime_data$`Date Reported`),
-    color = ~color(crime_data$Month)
-  ) %>%
-  addCircles(
-    data = bus_stops, ~lon, ~lat,
-    popup = paste0("Agency: ", bus_stops$agency, ", Route ID: ", bus_stops$route_id),
-    color = "Blue"
-  )
-crime_map
+#Creates a data frame selecting crime data that will be used for a table
+crime_table_data <- select(crime_data, Offense.Description,
+                         Month, Year, Longitude,
+                         Latitude)
+#Filters the selected crime data
+crime_table_data <- filter(crime_table_data, Year == "2018") %>%
+  filter( Month > "2")

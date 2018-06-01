@@ -8,7 +8,11 @@ source("busstopmap.R")
 source("crimedata.R")
 range_lat <- range(all_stops$lat)
 range_lon <- range(all_stops$lon)
-crime_data <- read.csv("./data/police_report_data.csv")
+crime_data <- read.csv("./data/police_report_data.csv", stringsAsFactors=FALSE, fileEncoding="latin1")
+
+ecda <- read.csv("./data/ednalysis.csv", stringsAsFactors=FALSE, fileEncoding="latin1")
+mo_s <- as.numeric(range(ecda$months_after))
+
 
 ui <- fluidPage(
   titlePanel("Public Transportation in Seattle"),
@@ -20,7 +24,7 @@ ui <- fluidPage(
                  h3("Public Transportation in Seattle"),
                  h5(tags$em("by Seth Brooks, Sophia Thurston, Miles Goodner, and Edward Wei")),
                  p(tags$em("To get started, "), "click on one of the tabs or stay on this tab to learn more about
-                         what motivated this project.")
+                   what motivated this project.")
                  ),
                mainPanel(
                  h3("What is it?"),
@@ -31,7 +35,7 @@ ui <- fluidPage(
                    tags$li("What is the relationship between racial demographics and access to transportation?"),
                    tags$li("What is the density of bus stops in different socioeconomic areas?"),
                    tags$li("What neighborhoods have the quickest and most frequent connections to University District?")),
-                   
+                 
                  p("In order to answer these questions, we decided to create a series of visualizations
                    that could be flipped through by the user in order to see which variables correlate
                    with density of bus stops. In this version of the app, we created a visualization that allows
@@ -39,13 +43,13 @@ ui <- fluidPage(
                    in one ride (i.e. without having to make a transfer). We also created a map that shows these
                    bus stops but with crime data on top, so that the user can see the relationship between crime
                    and density of bus stops."),
-               
+                 
                  h3("Why?"),
                  p("We created this app because we use public transporation all the time and originally
                    wanted to know more about how UW students get to campus everyday. We wanted to know who 
                    has the most immediate access to UW if they are using public transportation, and then
                    we wanted to see what other factors are related to someone's access to public transportation."),
-                
+                 
                  h3("How?"),
                  p("We used Leaflet to create high-resolution, interactive maps that can be 
                    zoomed and manipulated. We also used Shiny to create our application. The data we used
@@ -65,38 +69,37 @@ ui <- fluidPage(
                    tags$li(a("US Census Cartographic Boundary Shapefiles",
                              href = "https://www.census.gov/geo/maps-data/data/cbf/cbf_tracts.html"))
                  ))
-             )
-             ),
+                 )
+                 ),
     
-    tabPanel("Bus Stop Visualizer", fluid = TRUE,
+    tabPanel("Bus Stop Map", fluid = TRUE,
              sidebarLayout(
-               sidebarPanel(h3("Bus Stop Visualizer"),
-                            p("Here you can view all the bus stops that will get you on
-                              a bus to University District without a transfer. The stops can 
+               sidebarPanel(h3("Bus Stop Map"),
+                            p("Here you can view all the bus stops that will get you to University District without a transfer. The stops can 
                               be filtered by the latitude, longitude, and transit agency. Points on the map represent different bus stops 
                               and the colors indicate the transit agency the route belongs to. The stops can be clicked to 
                               show the route and transit agency associated with them. Additionally, the map
                               can be clicked to show you what neighborhood you are in. "),
-                            hr(),
-                 checkboxGroupInput("agency", "Select Transit Agency:", 
-                                        choices = all_stops$agency %>% unique(), 
-                                        selected = c("Metro Transit",
-                                                     "Sound Transit",
-                                                     "Community Transit")),
+                            checkboxGroupInput("agency", "Select Transit Agency:", 
+                                               choices = all_stops$agency %>% unique(), 
+                                               selected = c("Metro Transit",
+                                                            "Sound Transit",
+                                                            "Community Transit")),
                             sliderInput('lat_choice', label = "Adjust Latitude:", 
                                         min=range_lat[1], max = range_lat[2], 
                                         value = range_lat, step = 0.001),
                             sliderInput('lon_choice', label = "Adjust Longitude:", 
                                         min=range_lon[1], max = range_lon[2], 
                                         value = range_lon, step = 0.001),
-                 hr(),
-                 p(tags$em("Sources")),
-                 p(tags$em("http://api.pugetsound.onebusaway.org/", 
-                           "https://github.com/seattleio/seattle-boundaries-data"))),
+                            hr(),
+                            p(tags$em("Sources")),
+                            p(tags$em("http://api.pugetsound.onebusaway.org/", 
+                                      "https://github.com/seattleio/seattle-boundaries-data"))),
                mainPanel(
                  h3("Map"),
                  leafletOutput("stops"),
-                 h4("Map Summary"),
+                 verbatimTextOutput("count"),
+                 h3("Map Summary"),
                  p("Above you will notice a few things. Of all the agencies serving
                    Seattle, Metro Transit is certainly the most extensive in terms of 
                    access to University District. You will also notice that West Seattle, 
@@ -105,13 +108,13 @@ ui <- fluidPage(
                    to University District are the neighborhoods immediately surrounding University
                    District and also Downtown Seattle."),
                  hr(),
-                 h4("Table"),
+                 h3("Table"),
                  p("Here you will find the exact coordinates, route number, and agency
                    associated with all the stops displayed above."),
                  dataTableOutput("stops_table")
+                 )
                )
-             )
-    ),
+               ),
     
     tabPanel("Crime Data",
              sidebarLayout(
@@ -123,19 +126,44 @@ ui <- fluidPage(
                    and they are represented by the red spots on the map. The
                    blue spots represent the bus stops. When clicking on the crimes,
                    the offense and the date reported appears. When clicking on
-                   bus stops, the agency and route ID appears. The map can be be
-                   filtered by the type of offense commited."),
-                 #selectInput("Crime", "Select a Crime",
-                             #choices = crime_data$`Offense Type`)
-                 checkboxGroupInput("Month", "Select a Month",
-                                    choices = crime_data$Month)
+                   bus stops, the agency and route ID appears. Neighborhoods are also
+                   displayed when clicking on different areas on the map. The map can
+                   be filtered by the type of offense commited."),
+                 selectInput(inputId = "crime", label = "Choose a Crime:",
+                             choices = crime_data$Offense.Description,
+                             selected = "Theft", multiple = TRUE)
                  
+                 ),
+               mainPanel(
+                 h3("Map"),
+                 leafletOutput("crime_map"),
+                 h4("Summary"),
+                 p("When specifying the crime of interest, you can see that a large majority
+                   of crimes in Seattle occur in the downtown area. This is where several
+                   routes that lead to University District begin. Crimes in other areas seem
+                   to be more spread out. The map also shows that many crimes occur in 
+                   areas close to bus stops."),
+                 hr(),
+                 h3("Table"),
+                 p("First choose one or more crimes then a table will display the crime commited,
+                   the month and year it occured, and where it occured using longitude and latitude"),
+                 dataTableOutput("crime_table")
+               )
+             )),
+    
+    tabPanel("Employment and Buses",
+             sidebarLayout(
+               sidebarPanel(
+                 sliderInput('mo_after', label="Months After September 2015", min=mo_s[1], max=mo_s[2], value=mo_s)
                ),
                mainPanel(
-                 leafletOutput("crime_map")
-               )
-             )
+                 
+                 p("This research uses data from The Bureau of Labor Statistics and the Ride the Wave Transit Guide from Sound Transit."),
+                 
+                 plotOutput("eplot"),
+                 
+                 p("The green line represents changes in bus schedules and the red line represents added trips.")
+                 
+               ))
     )
-  )
-)
-
+    ))
