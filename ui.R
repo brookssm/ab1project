@@ -24,7 +24,7 @@ ui <- fluidPage(
                  h3("Public Transportation in Seattle"),
                  h5(tags$em("by Seth Brooks, Sophia Thurston, Miles Goodner, and Edward Wei")),
                  p(tags$em("To get started, "), "click on one of the tabs or stay on this tab to learn more about
-                         what motivated this project.")
+                   what motivated this project.")
                  ),
                mainPanel(
                  h3("What is it?"),
@@ -35,7 +35,7 @@ ui <- fluidPage(
                    tags$li("What is the relationship between racial demographics and access to transportation?"),
                    tags$li("What is the density of bus stops in different socioeconomic areas?"),
                    tags$li("What neighborhoods have the quickest and most frequent connections to University District?")),
-                   
+                 
                  p("In order to answer these questions, we decided to create a series of visualizations
                    that could be flipped through by the user in order to see which variables correlate
                    with density of bus stops. In this version of the app, we created a visualization that allows
@@ -43,13 +43,13 @@ ui <- fluidPage(
                    in one ride (i.e. without having to make a transfer). We also created a map that shows these
                    bus stops but with crime data on top, so that the user can see the relationship between crime
                    and density of bus stops."),
-               
+                 
                  h3("Why?"),
                  p("We created this app because we use public transporation all the time and originally
                    wanted to know more about how UW students get to campus everyday. We wanted to know who 
                    has the most immediate access to UW if they are using public transportation, and then
                    we wanted to see what other factors are related to someone's access to public transportation."),
-                
+                 
                  h3("How?"),
                  p("We used Leaflet to create high-resolution, interactive maps that can be 
                    zoomed and manipulated. We also used Shiny to create our application. The data we used
@@ -69,8 +69,8 @@ ui <- fluidPage(
                    tags$li(a("US Census Cartographic Boundary Shapefiles",
                              href = "https://www.census.gov/geo/maps-data/data/cbf/cbf_tracts.html"))
                  ))
-             )
-             ),
+                 )
+                 ),
     
     tabPanel("Bus Stop Visualizer", fluid = TRUE,
              sidebarLayout(
@@ -82,26 +82,26 @@ ui <- fluidPage(
                               show the route and transit agency associated with them. Additionally, the map
                               can be clicked to show you what neighborhood you are in. "),
                             hr(),
-                 checkboxGroupInput("agency", "Select Transit Agency:", 
-                                        choices = all_stops$agency %>% unique(), 
-                                        selected = c("Metro Transit",
-                                                     "Sound Transit",
-                                                     "Community Transit")),
+                            checkboxGroupInput("agency", "Select Transit Agency:", 
+                                               choices = all_stops$agency %>% unique(), 
+                                               selected = c("Metro Transit",
+                                                            "Sound Transit",
+                                                            "Community Transit")),
                             sliderInput('lat_choice', label = "Adjust Latitude:", 
                                         min=range_lat[1], max = range_lat[2], 
                                         value = range_lat, step = 0.001),
                             sliderInput('lon_choice', label = "Adjust Longitude:", 
                                         min=range_lon[1], max = range_lon[2], 
                                         value = range_lon, step = 0.001),
-                 hr(),
-                 p(tags$em("Sources")),
-                 p(tags$em("http://api.pugetsound.onebusaway.org/", 
-                           "https://github.com/seattleio/seattle-boundaries-data"))),
+                            hr(),
+                            p(tags$em("Sources")),
+                            p(tags$em("http://api.pugetsound.onebusaway.org/", 
+                                      "https://github.com/seattleio/seattle-boundaries-data"))),
                mainPanel(
                  h3("Map"),
                  leafletOutput("stops"),
                  verbatimTextOutput("count"),
-                 h4("Map Summary"),
+                 h3("Map Summary"),
                  p("Above you will notice a few things. Of all the agencies serving
                    Seattle, Metro Transit is certainly the most extensive in terms of 
                    access to University District. You will also notice that West Seattle, 
@@ -114,9 +114,9 @@ ui <- fluidPage(
                  p("Here you will find the exact coordinates, route number, and agency
                    associated with all the stops displayed above."),
                  dataTableOutput("stops_table")
+                 )
                )
-             )
-    ),
+               ),
     
     tabPanel("Crime Data",
              sidebarLayout(
@@ -131,27 +131,27 @@ ui <- fluidPage(
                    bus stops, the agency and route ID appears. The map can be be
                    filtered by the type of offense commited."),
                  selectInput('Crime', "Select a Crime",
-                            choices = crime_data$`Offense Type`)
-               ),
+                             choices = crime_data$`Offense Type`)
+                 
+                 ),
                mainPanel(
                  leafletOutput("crime_map")
                )
              )),
-             
+    
     tabPanel("Employment and Buses",
-              sidebarLayout(
-                sidebarPanel(
-                  sliderInput('mo_after', label="Months After September 2015", min=mo_s[1], max=mo_s[2], value=mo_s)
-                ),
-                mainPanel(
-                  
-                  p("This research uses data from The Bureau of Labor Statistics and the Ride the Wave Transit Guide from Sound Transit."),
-                  
-                  plotOutput("eplot"),
-                  
-                  p("The green line represents changes in bus schedules and the red line represents added trips.")
-                  
-                ))
-  )
-)
-)
+             sidebarLayout(
+               sidebarPanel(
+                 sliderInput('mo_after', label="Months After September 2015", min=mo_s[1], max=mo_s[2], value=mo_s)
+               ),
+               mainPanel(
+                 
+                 p("This research uses data from The Bureau of Labor Statistics and the Ride the Wave Transit Guide from Sound Transit."),
+                 
+                 plotOutput("eplot"),
+                 
+                 p("The green line represents changes in bus schedules and the red line represents added trips.")
+                 
+               ))
+    )
+    ))

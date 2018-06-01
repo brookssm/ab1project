@@ -24,12 +24,8 @@ server <- function(input, output) {
                lat <= input$lat_choice[2])
   })
   
-  output$count <- renderText({
-    nrow(filtered_stops())
-  })
-  
   output$stops <- renderLeaflet({
-  leaflet(topoData) %>%
+    leaflet(topoData) %>%
       setView(-122.3035, 47.6553, zoom = 11) %>%
       addTiles('http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', 
                attribution='Map tiles by <a href="http://stamen.com">Stamen Design</a>, 
@@ -39,7 +35,7 @@ server <- function(input, output) {
                   popup = paste0(topoData$name, ", ", topoData$city), color = "white", 
                   weight = 1, opacity = 0.5) %>% 
       addCircles(data = filtered_stops(), ~lon, ~lat, popup = paste0(all_stops$agency, ", ", 
-                                                              all_stops$route_id), 
+                                                                     all_stops$route_id), 
                  weight = 10, radius = 100, color = ~agencycolor(agency), 
                  stroke = FALSE, fillOpacity = 1.0) %>%
       addLegend("bottomright", pal = agencycolor, values = ~all_stops$agency,
@@ -47,19 +43,18 @@ server <- function(input, output) {
                 opacity = 0.8, data = all_stops)
   })
   
-  output$stops_table <- renderDataTable({
-    return(filtered_stops())
-  }, options = list(columns = list(
-         list(title = 'Latitude'),
-         list(title = 'Longitude'),
-         list(title = 'Route ID'),
-         list(title = 'Agency')))
-  )
-  
   output$count <- renderText({
     paste0("There are ", nrow(filtered_stops()), " bus stops currently being displayed.")
   })
   
+  output$stops_table <- renderDataTable({
+    return(filtered_stops())
+  }, options = list(columns = list(
+    list(title = 'Latitude'),
+    list(title = 'Longitude'),
+    list(title = 'Route ID'),
+    list(title = 'Agency')))
+  )
   
   crime_reactive <- reactive({
     rever <- crime_data %>%
@@ -67,12 +62,11 @@ server <- function(input, output) {
     return(rever)
   })
   
-  
   output$crime_map <- renderLeaflet({
     
     crime_map <- leaflet(crime_data) %>% setView(lng = -122.3312, lat = 47.62199, zoom = 10) %>%
       addTiles() %>%
-      addCircles(~Longitude, ~Latitude,
+      addCircles(data = crime_reactive(), ~Longitude, ~Latitude,
                  popup = paste0("Date Reported: ",
                                 crime_data$`Date Reported`),
                  color = ~color(crime_data$Month)
@@ -83,7 +77,10 @@ server <- function(input, output) {
         color = "Blue"
       )
     
+    
   })
+  
+  
   
   ed_rv <- reactive({
     ranver <- ecdata %>%
@@ -102,7 +99,7 @@ server <- function(input, output) {
     
   })
   
-
+  
   
   
 }

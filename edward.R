@@ -79,7 +79,7 @@ server <- function(input, output) {
   filtered <- reactive({
     data <- ecdata %>%
       filter(months_after > input$mo_after[1] & pct.asian < input$mo_after[2]) %>%
-    return(data)
+      return(data)
   })
   
   output$plot <- renderPlot({ 
@@ -91,7 +91,7 @@ server <- function(input, output) {
     return(p)
   })
   
-
+  
   
 }
 
@@ -103,7 +103,7 @@ ggplot(ecdata, aes(x = months_after, y = unemployment.rate))+ geom_bar(stat = "i
   guides(colour = FALSE)+
   labs(x= "Months after September 2015")+
   labs(y= "Percentage and number")
-  
+
 
 ecdata <- read.csv("./data/ednalysis.csv")
 
@@ -127,17 +127,17 @@ output$plot <- renderPlot({
   ,
   
   
-           
-           ,
-           
-           tabPanel("Crime Data",
-                    sidebarLayout(
-                      sidebarPanel(
-                        unique(selectInput("Crime", "Select a Crime",
-                                           choices = crime_data$`Offense Type`))
-                      ),
-                      mainPanel(
-                        leafletOutput("crime_map"))
-                    )
+  
+  ,
+  
+  tabPanel("Crime Data",
+           sidebarLayout(
+             sidebarPanel(
+               unique(selectInput("Crime", "Select a Crime",
+                                  choices = crime_data$`Offense Type`))
+             ),
+             mainPanel(
+               leafletOutput("crime_map"))
            )
   )
+)
