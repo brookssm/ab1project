@@ -34,6 +34,7 @@ acs_data <- read.csv("./data/census/ACS_16_5YR_B02001_with_ann.csv", stringsAsFa
   mutate(`Census Tract` = gsub("[^0-9.]", "", `Census Tract`)) %>% 
   mutate(`% Nonwhite` = 100 - `% White`)
 
+# Create full spatial object with acs data and census borders
 census_map <- tract
 census_map@data <- left_join(tract@data, acs_data)
 
@@ -55,40 +56,11 @@ sp.na.omit <- function(x, margin=1) {
   }
 }
 
-# King County Polygon Geometry and Census Demographics
-# in SpatialPolygonDataFrame
+# gets rid of polygon data for areas not in acs
 census_map <- sp.na.omit(census_map)
 
+# My map's color palette
 pal <- colorNumeric(
   palette = "YlGnBu",
   domain = c(0, 100)
 )
-
-labels <- lapply(seq(nrow(census_map@data)), function(i) {
-  paste0( "<p>",
-          "<p><strong>Census Tract ", census_map@data[i, "Census Tract"], "</strong>, Population",
-            census_map@data[i, "Population"], "</p>", 
-            "<ul>",
-              "<li>White:", census_map@data[i, "% White"] %>% round(2), "%</li>",
-              "<li>Black:", census_map@data[i, "% Black"] %>% round(2), "%</li>",
-              "<li>American Indian & Alaska Native:", census_map@data[i, "% American Indian & Alaskan Native"] %>% round(2), "%</li>",
-              "<li>Asian:", census_map@data[i, "% Asian"] %>% round(2), "%</li>",
-              "<li>Native Hawaiian & Pacific Islander:", census_map@data[i, "% Native Hawaiian & Pacific Islander"] %>% round(2), "%</li>",
-              "<li>Other:", census_map@data[i, "% Other"] %>% round(2), "%</li>",
-              "<li>Two or more races:", census_map@data[i, "% Two or more races"] %>% round(2), "%</li>",
-            "</ul>", 
-          "</p>" ) 
-})
-
-nonwhite_map <- leaflet() %>% 
-  addPolygons(data = census_map,
-              fillColor = ~pal(`% Nonwhite`),
-              color = "#b2aeae",
-              weight = 1,
-              fillOpacity = 0.6,
-              label = lapply(labels, HTML)) %>% 
-  addLegend(pal = pal,
-            values = c(0, 100),
-            position = "bottomright",
-            title = "% Nonwhite in population") %>% 
-  addTiles()
