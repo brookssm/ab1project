@@ -66,7 +66,8 @@ pal <- colorNumeric(
 
 labels <- lapply(seq(nrow(census_map@data)), function(i) {
   paste0( "<p>",
-          "<p><strong>Census Tract ", census_map@data[i, "Census Tract"], "</strong></p>", 
+          "<p><strong>Census Tract ", census_map@data[i, "Census Tract"], "</strong>, Population",
+            census_map@data[i, "Population"], "</p>", 
             "<ul>",
               "<li>White:", census_map@data[i, "% White"] %>% round(2), "%</li>",
               "<li>Black:", census_map@data[i, "% Black"] %>% round(2), "%</li>",

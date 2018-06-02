@@ -4,6 +4,10 @@ library(leaflet)
 library(geojsonio)
 library(ggplot2)
 source("censusmapping.R")
+source("allbusstops.R")
+source("busstopmap.R")
+source("policereports.R")
+source("crimedata.R")
 ecdata <- read.csv("./data/ednalysis.csv", stringsAsFactors=FALSE, fileEncoding="latin1")
 ecdata <- mutate(ecdata, months_after = as.numeric(months_after))%>%
   mutate(unemployment.rate = as.numeric(unemployment.rate)) %>%
@@ -117,7 +121,43 @@ server <- function(input, output) {
   })
   
   output$demographics_map <- renderLeaflet({
-    nonwhite_map
+    filtered_map <- census_map %>% 
+      subset(`% Nonwhite` >= input$nonwhite_percent[1] &
+              `% Nonwhite` <= input$nonwhite_percent[2])
+    
+    labels <- lapply(seq(nrow(filtered_map@data)), function(i) {
+      paste0( "<p>",
+              "<p><strong>Census Tract ", filtered_map@data[i, "Census Tract"], "</strong></p>", 
+              "<ul>",
+              "<li>White:", filtered_map@data[i, "% White"] %>% round(2), "%</li>",
+              "<li>Black:", filtered_map@data[i, "% Black"] %>% round(2), "%</li>",
+              "<li>American Indian & Alaska Native:", filtered_map@data[i, "% American Indian & Alaskan Native"] %>% round(2), "%</li>",
+              "<li>Asian:", filtered_map@data[i, "% Asian"] %>% round(2), "%</li>",
+              "<li>Native Hawaiian & Pacific Islander:", filtered_map@data[i, "% Native Hawaiian & Pacific Islander"] %>% round(2), "%</li>",
+              "<li>Other:", filtered_map@data[i, "% Other"] %>% round(2), "%</li>",
+              "<li>Two or more races:", filtered_map@data[i, "% Two or more races"] %>% round(2), "%</li>",
+              "</ul>", 
+              "</p>" ) 
+    })
+    
+    demographics_map <- leaflet() %>% 
+      addPolygons(data = filtered_map,
+                  fillColor = ~pal(`% Nonwhite`),
+                  color = "#b2aeae",
+                  weight = 1,
+                  fillOpacity = 0.6,
+                  label = lapply(labels, HTML)) %>% 
+      addLegend(pal = pal,
+                values = c(0, 100),
+                position = "bottomright",
+                title = "% Nonwhite in population") %>% 
+      addTiles('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', 
+               attribution= "&copy; <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors, 
+               &copy; <a href='http://cartodb.com/attributions'>CartoDB</a>") %>% 
+      addCircles(data = all_bus_stops, ~lon, ~lat, popup = all_bus_stops$name,
+                 color = "#222", opacity = 0.01, fillOpacity = 0.06, radius = 0.05)
+    
+    demographics_map
   })
   
   

@@ -173,11 +173,20 @@ ui <- fluidPage(
                  
                ))
     ),
-    tabPanel("Demographics of King County",
+    tabPanel("Demographics of Kingco and Buses",
              sidebarLayout(
                sidebarPanel(
-                 "This is a demographic map showing the percentage of people in each census tract of King county who are not white.
-                 Hover on a census tract to see what its number is and the exact percentages of each group in the population."
+                 p("This is a demographic map showing the percentage of people in each census tract of King county who are not white.
+                 Hover on a census tract to see what its number is and the exact percentages of each group in the population.
+                 Transit stops are also displayed and the name of the stop can be obtained by clicking on the point."),
+                 p("Important things to keep in mind: The demographic data is from the American Community Survey. It is averaged from
+                   2011 to 2016 to give fair impressions of the general breakdown of an area, and should not be used for exact measurements
+                   or to receive accurate information on a quickly changing area. Also, the demographic data is only for King County, and
+                   transit stops will be displayed outside of this range on the map, and displayed everywhere regardless of how you filter
+                   down the map."),
+                 tags$hr(),
+                 sliderInput("nonwhite_percent", label = "Only display census tracts with a nonwhite population between",
+                             min = 0, max = 100, value = c(0, 100), post = "%")
                ),
                mainPanel(
                  leafletOutput("demographics_map")

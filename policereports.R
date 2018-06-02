@@ -10,7 +10,7 @@ library(leaflet)
 incident_response <- read.csv("./data/police_report_data.csv", stringsAsFactors=FALSE, fileEncoding="latin1")
 
 incident_response <- incident_response %>% 
-  select(Offense.Type, Summarized.Offense.Description, Date.Reported, Month,
+  select(Offense.Type, Offense.Description, Date.Reported, Month,
          Year, Longitude, Latitude)
 
 colnames(incident_response) <- c("Offense Type", "Offense Description", 
