@@ -3,6 +3,7 @@ library(dplyr)
 library(leaflet)
 library(geojsonio)
 library(ggplot2)
+library(magrittr)
 source("censusmapping.R")
 source("allbusstops.R")
 source("busstopmap.R")
@@ -39,8 +40,10 @@ server <- function(input, output) {
       addPolygons(stroke = TRUE, smoothFactor = 0.1, fillOpacity = 0,
                   popup = paste0(topoData$name, ", ", topoData$city), color = "white", 
                   weight = 1, opacity = 0.4) %>% 
-      addCircles(data = filtered_stops(), ~lon, ~lat, popup = paste0(all_stops$agency, ", ", 
-                                                                     all_stops$route_id), 
+      addCircles(data = filtered_stops(), ~lon, ~lat, popup = paste0(filtered_stops() %>% 
+                                                                       use_series(agency), ", ", 
+                                                                     filtered_stops() %>% 
+                                                                       use_series(route_id)), 
                  weight = 10, radius = 100, color = ~agencycolor(agency), 
                  stroke = FALSE, fillOpacity = 0.8) %>%
       addLegend("bottomright", pal = agencycolor, values = ~all_stops$agency,
@@ -81,12 +84,14 @@ server <- function(input, output) {
                   popup = paste0(topoData$name, ", ", topoData$city), color = "white", 
                   weight = 1, opacity = 0.5) %>% 
       addCircles(data = crime_reactive(), ~Longitude, ~Latitude,
-                 popup = paste0(crime_map_data$Offense.Description, ", Date Reported: ",
-                                crime_map_data$Date.Reported),
+                 popup = paste0(crime_reactive() %>% 
+                                  use_series(Offense.Description), ", Date Reported: ",
+                                crime_map_data %>% 
+                                  use_series(Date.Reported)),
                  color = "red", stroke = FALSE, weight = 10, radius = 100,
                  fillOpacity = 0.5) %>% 
       addCircles(data = bus_stops, ~lon, ~lat,
-                 popup = paste0(all_stops$agency, ", ", all_stops$route_id),
+                 popup = paste0(bus_stops$agency, ", ", bus_stops$route_id),
                  color = "blue", stroke = FALSE, weight = 10, radius = 100,
                  fillOpacity = 0.8)
   })
