@@ -31,7 +31,8 @@ acs_data <- read.csv("./data/census/ACS_16_5YR_B02001_with_ann.csv", stringsAsFa
              "% Native Hawaiian & Pacific Islander",
              "% Other", "% Two or more races",
              "GEOID", "Census Tract")) %>% 
-  mutate(`Census Tract` = gsub("[^0-9.]", "", `Census Tract`))
+  mutate(`Census Tract` = gsub("[^0-9.]", "", `Census Tract`)) %>% 
+  mutate(`% Nonwhite` = 1 - `% White`)
 
 census_map <- tract
 census_map@data <- left_join(tract@data, acs_data)
@@ -60,28 +61,25 @@ census_map <- sp.na.omit(census_map)
 
 pal <- colorNumeric(
   palette = "YlGnBu",
-  domain = c(0, 1)
+  domain = c(0, 100)
 )
+
+labels <- lapply(seq(nrow(acs_data)), function(i) {
+  paste0( "<p>",
+          "<p><strong>Census Tract ", acs_data[i, "Census Tract"], "</strong></p>", 
+          "<p>","</p>", 
+          "</p>" ) 
+})
+
 nonwhite_map <- leaflet() %>% 
   addPolygons(data = census_map,
-              fillColor = ~pal(1 - `% White`),
+              fillColor = ~pal(`% Nonwhite` * 100),
               color = "#b2aeae",
               weight = 1,
-              fillOpacity = 1) %>% 
+              fillOpacity = 1,
+              label = lapply(labels, HTML)) %>% 
   addLegend(pal = pal,
-            values = 1 - (census_map$`% White`),
+            values = census_map$`% Nonwhite` * 100,
             position = "bottomright",
             title = "% Nonwhite in population")
 
-make_kingco_demo_map <- function(demographic, description_string) {
-  leaflet() %>% 
-    addPolygons(data = census_map,
-                fillColor = ~pal(demographic),
-                color = "#b2aeae",
-                weight = 1,
-                fillOpacity = 1) %>% 
-    addLegend(pal = pal,
-              values = demographic,
-              position = "bottomright",
-              title = paste("%", description_string, "in population"))
-}

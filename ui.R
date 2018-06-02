@@ -169,7 +169,8 @@ ui <- fluidPage(
     tabPanel("Demographics of King County",
              sidebarLayout(
                sidebarPanel(
-                 "Controls here"
+                 "This is a demographic map showing the percentage of people in each census tract of King county who are not white.
+                 Hover on a census tract to see what its number is and the exact percentages of each group in the population."
                ),
                mainPanel(
                  leafletOutput("demographics_map")
