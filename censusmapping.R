@@ -67,7 +67,8 @@ nonwhite_map <- leaflet() %>%
               fillColor = ~pal(1 - `% White`),
               color = "#b2aeae",
               weight = 1,
-              fillOpacity = 1) %>% 
+              fillOpacity = 1,
+              popup = census_map$Population) %>% 
   addLegend(pal = pal,
             values = 1 - (census_map$`% White`),
             position = "bottomright",
