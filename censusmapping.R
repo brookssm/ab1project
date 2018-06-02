@@ -18,13 +18,13 @@ acs_data <- read.csv("./data/census/ACS_16_5YR_B02001_with_ann.csv", stringsAsFa
   mutate_if(is.integer, as.double) %>% 
   mutate(# Population counts to population percents
          # mutate_if not working
-         HD01_VD02 = HD01_VD02 / HD01_VD01,
-         HD01_VD03 = HD01_VD03 / HD01_VD01,
-         HD01_VD04 = HD01_VD04 / HD01_VD01,
-         HD01_VD05 = HD01_VD05 / HD01_VD01,
-         HD01_VD06 = HD01_VD06 / HD01_VD01,
-         HD01_VD07 = HD01_VD07 / HD01_VD01,
-         HD01_VD08 = HD01_VD08 / HD01_VD01) %>% 
+         HD01_VD02 = 100 * HD01_VD02 / HD01_VD01,
+         HD01_VD03 = 100 * HD01_VD03 / HD01_VD01,
+         HD01_VD04 = 100 * HD01_VD04 / HD01_VD01,
+         HD01_VD05 = 100 * HD01_VD05 / HD01_VD01,
+         HD01_VD06 = 100 * HD01_VD06 / HD01_VD01,
+         HD01_VD07 = 100 * HD01_VD07 / HD01_VD01,
+         HD01_VD08 = 100 * HD01_VD08 / HD01_VD01) %>% 
   setNames(c("Population", "% White", "% Black",
              "% American Indian & Alaskan Native",
              "% Asian", 
@@ -32,7 +32,7 @@ acs_data <- read.csv("./data/census/ACS_16_5YR_B02001_with_ann.csv", stringsAsFa
              "% Other", "% Two or more races",
              "GEOID", "Census Tract")) %>% 
   mutate(`Census Tract` = gsub("[^0-9.]", "", `Census Tract`)) %>% 
-  mutate(`% Nonwhite` = 1 - `% White`)
+  mutate(`% Nonwhite` = 100 - `% White`)
 
 census_map <- tract
 census_map@data <- left_join(tract@data, acs_data)
@@ -64,22 +64,30 @@ pal <- colorNumeric(
   domain = c(0, 100)
 )
 
-labels <- lapply(seq(nrow(acs_data)), function(i) {
+labels <- lapply(seq(nrow(census_map@data)), function(i) {
   paste0( "<p>",
-          "<p><strong>Census Tract ", acs_data[i, "Census Tract"], "</strong></p>", 
-          "<p>","</p>", 
+          "<p><strong>Census Tract ", census_map@data[i, "Census Tract"], "</strong></p>", 
+            "<ul>",
+              "<li>White:", census_map@data[i, "% White"] %>% round(2), "%</li>",
+              "<li>Black:", census_map@data[i, "% Black"] %>% round(2), "%</li>",
+              "<li>American Indian & Alaska Native:", census_map@data[i, "% American Indian & Alaskan Native"] %>% round(2), "%</li>",
+              "<li>Asian:", census_map@data[i, "% Asian"] %>% round(2), "%</li>",
+              "<li>Native Hawaiian & Pacific Islander:", census_map@data[i, "% Native Hawaiian & Pacific Islander"] %>% round(2), "%</li>",
+              "<li>Other:", census_map@data[i, "% Other"] %>% round(2), "%</li>",
+              "<li>Two or more races:", census_map@data[i, "% Two or more races"] %>% round(2), "%</li>",
+            "</ul>", 
           "</p>" ) 
 })
 
 nonwhite_map <- leaflet() %>% 
   addPolygons(data = census_map,
-              fillColor = ~pal(`% Nonwhite` * 100),
+              fillColor = ~pal(`% Nonwhite`),
               color = "#b2aeae",
               weight = 1,
-              fillOpacity = 1,
+              fillOpacity = 0.6,
               label = lapply(labels, HTML)) %>% 
   addLegend(pal = pal,
-            values = census_map$`% Nonwhite` * 100,
+            values = c(0, 100),
             position = "bottomright",
-            title = "% Nonwhite in population")
-
+            title = "% Nonwhite in population") %>% 
+  addTiles()
