@@ -8,31 +8,31 @@ library(mapdata)
 library(leaflet)
 
 incident_response <- read.csv("./data/police_report_data.csv", stringsAsFactors=FALSE, fileEncoding="latin1")
-
-incident_response <- incident_response %>% 
-  select(Offense.Type, Summarized.Offense.Description, Date.Reported, Month,
-         Year, Longitude, Latitude)
-
-colnames(incident_response) <- c("Offense Type", "Offense Description", 
-                                 "Date Reported", "Month", "Year", "Longitude", 
-                                 "Latitude")
-
-incident_response$`Date Reported` <- strtrim(incident_response$`Date Reported`, 
-                                             10)
-incident_response$`Date Reported` <- sub("2018", "18", 
-                                         incident_response$`Date Reported`)
-incident_response$`Date Reported` <- as.Date(incident_response$`Date Reported`, 
-                                             "%m/%d/%y")
-
-incident_response$`Offense Description` <- tolower(incident_response$`Offense Description`)
-
-capFirst <- function(s) {
-  paste(toupper(substring(s, 1, 1)), substring(s, 2), sep = "")
-}
-
-incident_response$`Offense Description` <- capFirst(incident_response$`Offense Description`)
-
-write.csv(incident_response, "./data/police_report_data.csv")
+# Commented out the below as it only needed to be done once for processing
+# incident_response <- incident_response %>% 
+#   select(Offense.Type, Offense.Description, Date.Reported, Month,
+#          Year, Longitude, Latitude)
+# 
+# colnames(incident_response) <- c("Offense Type", "Offense Description", 
+#                                  "Date Reported", "Month", "Year", "Longitude", 
+#                                  "Latitude")
+# 
+# incident_response$`Date Reported` <- strtrim(incident_response$`Date Reported`, 
+#                                              10)
+# incident_response$`Date Reported` <- sub("2018", "18", 
+#                                          incident_response$`Date Reported`)
+# incident_response$`Date Reported` <- as.Date(incident_response$`Date Reported`, 
+#                                              "%m/%d/%y")
+# 
+# incident_response$`Offense Description` <- tolower(incident_response$`Offense Description`)
+# 
+# capFirst <- function(s) {
+#   paste(toupper(substring(s, 1, 1)), substring(s, 2), sep = "")
+# }
+# 
+# incident_response$`Offense Description` <- capFirst(incident_response$`Offense Description`)
+# 
+# write.csv(incident_response, "./data/police_report_data.csv")
 
 crimemap <- leaflet(incident_response) %>% addTiles('http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', 
                                        attribution='Map tiles by <a href="http://stamen.com">Stamen Design</a>, 

@@ -5,8 +5,8 @@ account: brookssm
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 351873
-bundleId: 1405981
+bundleId: 1406624
 url: https://brookssm.shinyapps.io/ab1project/
-when: 1527885519.0865
+when: 1527918813.19756
 asMultiple: FALSE
 asStatic: FALSE

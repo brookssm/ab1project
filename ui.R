@@ -6,17 +6,17 @@ library(ggplot2)
 
 source("busstopmap.R")
 source("crimedata.R")
+# defines range for long and lat
 range_lat <- range(all_stops$lat)
 range_lon <- range(all_stops$lon)
 crime_data <- read.csv("./data/police_report_data.csv", stringsAsFactors=FALSE, fileEncoding="latin1")
-
 ecda <- read.csv("./data/ednalysis.csv", stringsAsFactors=FALSE, fileEncoding="latin1")
 mo_s <- as.numeric(range(ecda$months_after))
 
 
 ui <- fluidPage(
   titlePanel("Public Transportation in Seattle"),
-  
+  # creates about page
   tabsetPanel(
     tabPanel("About",
              sidebarLayout(
@@ -71,23 +71,26 @@ ui <- fluidPage(
                  ))
                  )
                  ),
-    
-    tabPanel("Bus Stop Map", fluid = TRUE,
+    # creates bus stop map page 
+    tabPanel("Bus Stops to U-District", fluid = TRUE,
              sidebarLayout(
-               sidebarPanel(h3("Bus Stop Map"),
+               sidebarPanel(h3("Bus Stops to U-District"),
                             p("Here you can view all the bus stops that will get you to University District without a transfer. The stops can 
                               be filtered by the latitude, longitude, and transit agency. Points on the map represent different bus stops 
                               and the colors indicate the transit agency the route belongs to. The stops can be clicked to 
                               show the route and transit agency associated with them. Additionally, the map
                               can be clicked to show you what neighborhood you are in. "),
+                            # allows user to select agency
                             checkboxGroupInput("agency", "Select Transit Agency:", 
                                                choices = all_stops$agency %>% unique(), 
                                                selected = c("Metro Transit",
                                                             "Sound Transit",
                                                             "Community Transit")),
+                            # allows user to adjust latitude
                             sliderInput('lat_choice', label = "Adjust Latitude:", 
                                         min=range_lat[1], max = range_lat[2], 
                                         value = range_lat, step = 0.001),
+                            # allows user to adjust latitude
                             sliderInput('lon_choice', label = "Adjust Longitude:", 
                                         min=range_lon[1], max = range_lon[2], 
                                         value = range_lon, step = 0.001),
@@ -115,8 +118,8 @@ ui <- fluidPage(
                  )
                )
                ),
-    
-    tabPanel("Crime Data",
+    # crime data page
+    tabPanel("Crime Data and Buses",
              sidebarLayout(
                sidebarPanel(
                  h3("Crime Data"),
@@ -129,6 +132,7 @@ ui <- fluidPage(
                    bus stops, the agency and route ID appears. Neighborhoods are also
                    displayed when clicking on different areas on the map. The map can
                    be filtered by the type of offense commited."),
+                 # allows user to select crime type
                  selectInput(inputId = "crime", label = "Choose a Crime:",
                              choices = crime_data$Offense.Description,
                              selected = "Theft", multiple = TRUE)
@@ -150,10 +154,11 @@ ui <- fluidPage(
                  dataTableOutput("crime_table")
                )
              )),
-    
+    # employment and buses info page
     tabPanel("Employment and Buses",
              sidebarLayout(
                sidebarPanel(
+                 # allows user to select by month after 09/2015
                  sliderInput('mo_after', label="Months After September 2015", min=mo_s[1], max=mo_s[2], value=mo_s)
                ),
                mainPanel(
@@ -173,10 +178,22 @@ ui <- fluidPage(
                  
                ))
     ),
-    tabPanel("Demographics of King County",
+    # demographic page
+    tabPanel("King County Demographics and Buses",
              sidebarLayout(
                sidebarPanel(
-                 "Controls here"
+                 p("This is a demographic map showing the percentage of people in each census tract of King county who are not white.
+                 Hover on a census tract to see what its number is and the exact percentages of each group in the population.
+                 Transit stops are also displayed and the name of the stop can be obtained by clicking on the point."),
+                 p("Important things to keep in mind: The demographic data is from the American Community Survey. It is averaged from
+                   2011 to 2016 to give fair impressions of the general breakdown of an area, and should not be used for exact measurements
+                   or to receive accurate information on a quickly changing area. Also, the demographic data is only for King County, and
+                   transit stops will be displayed outside of this range on the map, and displayed everywhere regardless of how you filter
+                   down the map."),
+                 tags$hr(),
+                 # allows user to filter based on nonwhite percent
+                 sliderInput("nonwhite_percent", label = "Only display census tracts with a nonwhite population between",
+                             min = 0, max = 100, value = c(0, 100), post = "%")
                ),
                mainPanel(
                  leafletOutput("demographics_map")
